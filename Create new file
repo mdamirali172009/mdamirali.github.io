@@ -3,28 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>আমার প্রথম ওয়েবসাইট</title>
+    <title>MD AMIR ALI | Photography</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap');
+        
+        :root {
+            --primary: #e11d48;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            background-color: #0d1117;
-            color: white;
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #e5e5e5;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #222;
+        }
+        
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 2px;
+        }
+        
+        nav a {
+            color: #ccc;
+            text-decoration: none;
+            margin-left: 2rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: var(--primary);
+        }
+        
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.8)), url('https://picsum.photos/id/1015/1920/1080') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            padding: 100px 20px;
+            position: relative;
         }
-        h1 {
-            font-size: 3em;
-            color: #58a6ff;
+        
+        .hero-content {
+            max-width: 800px;
+            padding: 0 20px;
         }
-        p {
-            font-size: 1.3em;
-            margin: 20px 0;
+        
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .hero p {
+            font-size: 1.4rem;
+            color: #ddd;
+            margin-bottom: 2rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 14px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.4s;
+        }
+        
+        .btn:hover {
+            background: #f43f5e;
+            transform: translateY(-5px);
+        }
+        
+        section {
+            padding: 100px 5%;
+        }
+        
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #fff;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .gallery img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 12px;
+            transition: transform 0.5s, box-shadow 0.5s;
+        }
+        
+        .gallery img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(225, 29, 72, 0.3);
+        }
+        
+        .about {
+            background: #111;
+            text-align: center;
+        }
+        
+        .about p {
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            font-size: 1.2rem;
+            color: #bbb;
+        }
+        
+        .contact {
+            background: #0a0a0a;
+            text-align: center;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px;
+            background: #000;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 3rem; }
+            nav a { margin-left: 1rem; font-size: 0.95rem; }
         }
     </style>
 </head>
 <body>
-    <h1>স্বাগতম!</h1>
-    <p>এটা আমার প্রথম GitHub Pages ওয়েবসাইট</p>
-    <p>mdamirali172009.github.io</p>
+    <header>
+        <div class="logo">MD AMIR ALI</div>
+        <nav>
+            <a href="#gallery">গ্যালারি</a>
+            <a href="#about">আমার সম্পর্কে</a>
+            <a href="#contact">যোগাযোগ</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>MD AMIR ALI</h1>
+            <p>আলোকচিত্রশিল্পী | গল্প বলি আলো ও ছায়া দিয়ে</p>
+            <a href="#gallery" class="btn">আমার কাজ দেখুন</a>
+        </div>
+    </section>
+
+    <section id="gallery">
+        <h2>নির্বাচিত কাজ</h2>
+        <div class="gallery">
+            <img src="https://picsum.photos/id/1015/800/600" alt="Photography 1">
+            <img src="https://picsum.photos/id/201/800/600" alt="Photography 2">
+            <img src="https://picsum.photos/id/237/800/600" alt="Photography 3">
+            <img src="https://picsum.photos/id/1016/800/600" alt="Photography 4">
+            <img src="https://picsum.photos/id/133/800/600" alt="Photography 5">
+            <img src="https://picsum.photos/id/180/800/600" alt="Photography 6">
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <h2>আমার সম্পর্কে</h2>
+        <p>আমি এমডি আমির আলি, একজন প্যাশনেট ফটোগ্রাফার। প্রকৃতি, মানুষ এবং শহুরে জীবনের অদ্ভুত সৌন্দর্যকে ক্যামেরায় ধরে রাখতে ভালোবাসি।</p>
+        <p>প্রতিটি ছবির পেছনে একটা গল্প থাকে — আমি সেই গল্পগুলোকে আলো, ছায়া ও মুহূর্তের মাধ্যমে তুলে ধরি।</p>
+    </section>
+
+    <section id="contact" class="contact">
+        <h2>যোগাযোগ করুন</h2>
+        <p>নতুন প্রজেক্ট, শুটিং বা কোনো কথা বলতে চাইলে নিচে মেসেজ করুন।</p>
+        <p style="margin: 30px 0; font-size: 1.3rem;">
+            📧 <strong>amirali172009@gmail.com</strong><br>
+            📱 +880 XXXXXXXXXX
+        </p>
+        <a href="https://instagram.com" target="_blank" class="btn">Instagram-এ ফলো করুন</a>
+    </section>
+
+    <footer>
+        &copy; 2026 MD AMIR ALI Photography. All Rights Reserved.<br>
+        Made with ❤️ using GitHub Pages
+    </footer>
 </body>
 </html>
