@@ -1,124 +1,176 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Md Amin Ali | Global Photographer</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Hind+Siliguri:wght@400;600&display=swap');
-        body { font-family: 'Hind Siliguri', sans-serif; background: #000; color: white; overflow-x: hidden; }
-        
-        /* গ্লোবাল ম্যাপ ও নিওন ইফেক্ট */
-        .world-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #0a1f1a 0%, #000 100%);
-            z-index: -1;
-        }
-        .dot { position: absolute; border-radius: 50%; animation: blink 3s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.8); } }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secret System</title>
 
-        .glass-ui {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 2.5rem;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
+<script src="https://cdn.tailwindcss.com"></script>
 
-        .neon-gradient {
-            background: linear-gradient(90deg, #00ffcc, #007cf0, #ff00ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-family: 'Orbitron', sans-serif;
-        }
-    </style>
+<style>
+body {
+    background: radial-gradient(circle at center, #020617, #000);
+    overflow-x: hidden;
+}
+
+.glass {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.card {
+    transition: 0.6s;
+    transform-style: preserve-3d;
+}
+
+.card:hover {
+    transform: rotateY(180deg) scale(1.05);
+}
+
+.inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.front, .back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+}
+
+.back {
+    transform: rotateY(180deg);
+}
+
+</style>
 </head>
-<body>
 
-    <div class="world-bg" id="map"></div>
+<body class="text-white flex items-center justify-center min-h-screen">
 
-    <div class="min-h-screen flex flex-col items-center justify-center px-6 py-10">
-        
-        <div class="text-center mb-8">
-            <h1 class="neon-gradient text-5xl md:text-7xl font-bold tracking-tighter mb-4">MD AMIN ALI</h1>
-            <p class="text-xs tracking-[0.5em] text-emerald-400 uppercase">Global Visual Storyteller</p>
-        </div>
+<div class="text-center">
 
-        <div class="flex gap-5 mb-12">
-            <a href="https://www.facebook.com/amirali172009" target="_blank" class="w-14 h-14 glass-ui flex items-center justify-center text-blue-500 text-2xl hover:scale-110 transition"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://www.instagram.com/amirali172009" target="_blank" class="w-14 h-14 glass-ui flex items-center justify-center text-pink-500 text-2xl hover:scale-110 transition"><i class="fab fa-instagram"></i></a>
-            <a href="https://x.com/mdamirali172009" target="_blank" class="w-14 h-14 glass-ui flex items-center justify-center text-white text-2xl hover:scale-110 transition"><i class="fab fa-x-twitter"></i></a>
-            <a href="https://wa.me/8801840364137" target="_blank" class="w-14 h-14 glass-ui flex items-center justify-center text-green-500 text-2xl hover:scale-110 transition"><i class="fab fa-whatsapp"></i></a>
-        </div>
+<h1 id="title" class="text-5xl font-bold mb-10"></h1>
 
-        <div class="glass-ui w-full max-w-md p-10 relative">
-            <h3 class="text-2xl font-bold mb-8 text-center text-white">রেজিস্ট্রেশন করুন</h3>
-            
-            <form id="contact-form" class="space-y-6">
-                <input type="text" name="user_name" placeholder="আপনার নাম" required 
-                class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-emerald-400 transition text-white">
-                
-                <input type="email" name="user_email" placeholder="ইমেইল অ্যাড্রেস" required 
-                class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-emerald-400 transition text-white">
-                
-                <button type="submit" id="submit-btn" 
-                class="w-full bg-gradient-to-r from-emerald-500 to-blue-600 py-4 rounded-2xl font-bold uppercase tracking-widest text-black hover:brightness-110 transition active:scale-95">
-                    সাবমিট করুন
-                </button>
-            </form>
-            <p id="response-msg" class="mt-6 text-center text-sm font-semibold"></p>
-        </div>
-    </div>
+<div id="cards" class="grid grid-cols-2 md:grid-cols-3 gap-6"></div>
 
-    <script>
-        // ব্যাকগ্রাউন্ড ম্যাপ ডটস জেনারেটর
-        const map = document.getElementById('map');
-        const colors = ['#00ffcc', '#ff00ff', '#007cf0', '#ffff00'];
-        for (let i = 0; i < 60; i++) {
-            let dot = document.createElement('div');
-            dot.className = 'dot';
-            dot.style.width = Math.random() * 4 + 'px';
-            dot.style.height = dot.style.width;
-            dot.style.top = Math.random() * 100 + '%';
-            dot.style.left = Math.random() * 100 + '%';
-            dot.style.background = colors[Math.floor(Math.random() * colors.length)];
-            dot.style.boxShadow = `0 0 10px ${dot.style.background}`;
-            dot.style.animationDelay = Math.random() * 5 + 's';
-            map.appendChild(dot);
+</div>
+
+<script>
+
+// ================== ANTI DEBUG 😈 ==================
+setInterval(() => {
+    if (window.outerWidth - window.innerWidth > 200) {
+        document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:50px;'>⚠️ Access Denied</h1>";
+    }
+}, 1000);
+
+
+// ================== ENCODED REAL DATA 🔐 ==================
+const secretData = [
+    "RmFjZWJvb2s6aHR0cHM6Ly9mYi5jb20vWU9VUl9JRA==",
+    "SW5zdGFncmFtOmh0dHBzOi8vaW5zdGFncmFtLmNvbS9ZT1VSX0lE",
+    "V2hhdHNBcHA6ODgwMTcxMjM0NTY3OA==",
+    "TW9iaWxlOjAxNzEyMzQ1Njc4"
+];
+
+// ================== FAKE DATA 😏 ==================
+const fakeData = [
+    "Facebook: error_loading",
+    "Instagram: private_user",
+    "WhatsApp: hidden",
+    "Mobile: unknown"
+];
+
+// decode function
+function decode(str) {
+    return atob(str);
+}
+
+// random delay reveal
+function revealData() {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            const real = secretData.map(decode);
+            resolve(real);
+        }, Math.random() * 2000 + 1000);
+    });
+}
+
+// ================== UI GENERATE ==================
+async function createUI() {
+
+    document.getElementById("title").innerText = "Welcome System";
+
+    const container = document.getElementById("cards");
+
+    // first show fake
+    fakeData.forEach(item => {
+        const div = createCard(item);
+        container.appendChild(div);
+    });
+
+    // then replace with real (smooth)
+    const realData = await revealData();
+
+    container.innerHTML = "";
+
+    realData.forEach(item => {
+        const div = createCard(item, true);
+        container.appendChild(div);
+    });
+}
+
+// ================== CARD ==================
+function createCard(text, real=false) {
+
+    const div = document.createElement("div");
+    div.className = "card glass rounded-3xl p-6 h-40 cursor-pointer";
+
+    const inner = document.createElement("div");
+    inner.className = "inner";
+
+    const front = document.createElement("div");
+    front.className = "front flex items-center justify-center text-lg";
+    front.innerText = real ? "🔐 Tap" : text;
+
+    const back = document.createElement("div");
+    back.className = "back flex items-center justify-center text-sm text-green-400";
+    back.innerText = text;
+
+    inner.appendChild(front);
+    inner.appendChild(back);
+    div.appendChild(inner);
+
+    // click copy
+    div.onclick = () => {
+        if(real){
+            navigator.clipboard.writeText(text);
+            div.style.background = "green";
         }
+    };
 
-        // EmailJS Integration লজিক
-        (function() {
-            // আপনার EmailJS Public Key এখানে বসান
-            emailjs.init("YOUR_PUBLIC_KEY"); 
-        })();
+    return div;
+}
 
-        document.getElementById('contact-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const btn = document.getElementById('submit-btn');
-            const msg = document.getElementById('response-msg');
+// ================== TYPE EFFECT ==================
+let nameText = "Md Amin Ali";
+let i = 0;
 
-            btn.innerText = "পাঠানো হচ্ছে...";
-            btn.disabled = true;
+function typeEffect() {
+    if (i < nameText.length) {
+        document.getElementById("title").innerHTML += nameText.charAt(i);
+        i++;
+        setTimeout(typeEffect, 80);
+    }
+}
 
-            // EmailJS এর মাধ্যমে ইমেইল পাঠানো
-            emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', this)
-                .then(function() {
-                    msg.style.color = "#00ffcc";
-                    msg.innerText = "আপনার ইমেইলটি সম্পূর্ণভাবে আমরা গ্রহণ করছি!";
-                    btn.innerText = "সফল হয়েছে";
-                    document.getElementById('contact-form').reset();
-                }, function(error) {
-                    msg.style.color = "#ff4d4d";
-                    msg.innerText = "দুঃখিত! আবার চেষ্টা করুন।";
-                    btn.innerText = "ব্যর্থ হয়েছে";
-                    btn.disabled = false;
-                });
-        });
-    </script>
+typeEffect();
+createUI();
+
+</script>
+
 </body>
 </html>
