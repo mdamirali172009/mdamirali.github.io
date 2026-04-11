@@ -9,177 +9,116 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Hind+Siliguri:wght@300;600&display=swap');
-
-        :root {
-            --primary: #00ffcc;
-            --accent: #ff00ff;
-        }
-
-        body, html {
-            margin: 0; padding: 0;
-            background: #000;
-            color: #fff;
-            font-family: 'Hind Siliguri', sans-serif;
-            overflow-x: hidden;
-        }
-
-        /* ওয়ার্ল্ড ম্যাপ ব্যাকগ্রাউন্ড ইফেক্ট (Pure CSS) */
-        .map-bg {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Hind+Siliguri:wght@400;600&display=swap');
+        body { font-family: 'Hind Siliguri', sans-serif; background: #000; color: white; overflow-x: hidden; }
+        
+        /* গ্লোবাল ম্যাপ ও নিওন ইফেক্ট */
+        .world-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #0a1f1a 0%, #000 100%);
             z-index: -1;
-            opacity: 0.6;
         }
+        .dot { position: absolute; border-radius: 50%; animation: blink 3s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.8); } }
 
-        /* এনিমেশনযুক্ত কানেকশন লাইন */
-        .grid-overlay {
-            position: absolute;
-            width: 200%; height: 200%;
-            background-image: 
-                linear-gradient(to right, rgba(0, 255, 204, 0.05) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(0, 255, 204, 0.05) 1px, transparent 1px);
-            background-size: 50px 50px;
-            transform: perspective(500px) rotateX(60deg);
-            animation: moveGrid 20s linear infinite;
-        }
-
-        @keyframes moveGrid {
-            0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
-            100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
-        }
-
-        .glass {
+        .glass-ui {
             background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(15px);
+            backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            border-radius: 2.5rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
-        .neon-text {
-            text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary);
+        .neon-gradient {
+            background: linear-gradient(90deg, #00ffcc, #007cf0, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             font-family: 'Orbitron', sans-serif;
-        }
-
-        .hero-title {
-            animation: fadeInDown 1.5s ease-out;
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* কালারফুল গ্লোবাল ম্যাপ সিমুলেশন */
-        .dot {
-            position: absolute;
-            width: 4px; height: 4px;
-            background: var(--primary);
-            border-radius: 50%;
-            filter: blur(1px);
-            box-shadow: 0 0 10px var(--primary);
-            animation: pulse 2s infinite;
         }
     </style>
 </head>
 <body>
 
-    <div class="map-bg">
-        <div class="grid-overlay"></div>
-        <div class="dot" style="top: 30%; left: 20%; background: #ff4d4d;"></div>
-        <div class="dot" style="top: 45%; left: 70%; background: #00ffcc;"></div>
-        <div class="dot" style="top: 60%; left: 40%; background: #ff00ff;"></div>
-        <div class="dot" style="top: 20%; left: 80%; background: #ffff00;"></div>
-    </div>
+    <div class="world-bg" id="map"></div>
 
-    <nav class="p-6 flex justify-between items-center fixed w-full z-50">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-emerald-500 rounded-full flex justify-center items-center font-bold text-black">A</div>
-            <span class="text-xl font-bold tracking-widest neon-text">MD AMIN ALI</span>
-        </div>
-        <div class="hidden md:flex gap-8 font-semibold uppercase text-sm tracking-widest">
-            <a href="#home" class="hover:text-emerald-400 transition">Home</a>
-            <a href="#social" class="hover:text-emerald-400 transition">Connect</a>
-            <a href="#register" class="hover:text-emerald-400 transition">Register</a>
-        </div>
-    </nav>
-
-    <main id="home" class="min-h-screen flex flex-col justify-center items-center text-center px-4 pt-20">
-        <h2 class="hero-title text-5xl md:text-8xl font-black mb-4 tracking-tighter">GLOBAL STORIES</h2>
-        <p class="text-emerald-400 text-lg md:text-2xl font-light tracking-[0.5em] mb-12 uppercase">Exploring World Through Lens</p>
+    <div class="min-h-screen flex flex-col items-center justify-center px-6 py-10">
         
-        <div class="flex gap-6 mb-20">
-            <a href="https://www.facebook.com/amirali172009" target="_blank" class="w-14 h-14 glass flex justify-center items-center text-2xl hover:bg-blue-600 transition"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://www.instagram.com/amirali172009" target="_blank" class="w-14 h-14 glass flex justify-center items-center text-2xl hover:bg-pink-600 transition"><i class="fab fa-instagram"></i></a>
-            <a href="https://x.com/mdamirali172009" target="_blank" class="w-14 h-14 glass flex justify-center items-center text-2xl hover:bg-white hover:text-black transition"><i class="fab fa-x-twitter"></i></a>
-            <a href="https://wa.me/8801840364137" target="_blank" class="w-14 h-14 glass flex justify-center items-center text-2xl hover:bg-green-600 transition"><i class="fab fa-whatsapp"></i></a>
+        <div class="text-center mb-8">
+            <h1 class="neon-gradient text-5xl md:text-7xl font-bold tracking-tighter mb-4">MD AMIN ALI</h1>
+            <p class="text-xs tracking-[0.5em] text-emerald-400 uppercase">Global Visual Storyteller</p>
         </div>
 
-        <section id="register" class="w-full max-w-lg glass p-8 md:p-12 mb-20 relative overflow-hidden">
-            <div class="absolute top-0 right-0 p-4 opacity-20"><i class="fas fa-globe-asia text-6xl"></i></div>
-            <h3 class="text-2xl font-bold mb-8 neon-text">ইক্লুসিভ অ্যাক্সেস রেজিস্ট্রেশন</h3>
+        <div class="flex gap-5 mb-12">
+            <a href="https://www.facebook.com/amirali172009" target="_blank" class="w-14 h-14 glass-ui flex items-center justify-center text-blue-500 text-2xl hover:scale-110 transition"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/amirali172009" target="_blank" class="w-14 h-14 glass-ui flex items-center justify-center text-pink-500 text-2xl hover:scale-110 transition"><i class="fab fa-instagram"></i></a>
+            <a href="https://x.com/mdamirali172009" target="_blank" class="w-14 h-14 glass-ui flex items-center justify-center text-white text-2xl hover:scale-110 transition"><i class="fab fa-x-twitter"></i></a>
+            <a href="https://wa.me/8801840364137" target="_blank" class="w-14 h-14 glass-ui flex items-center justify-center text-green-500 text-2xl hover:scale-110 transition"><i class="fab fa-whatsapp"></i></a>
+        </div>
+
+        <div class="glass-ui w-full max-w-md p-10 relative">
+            <h3 class="text-2xl font-bold mb-8 text-center text-white">রেজিস্ট্রেশন করুন</h3>
             
-            <form id="regForm" class="space-y-6 text-left">
-                <div>
-                    <label class="block text-xs uppercase tracking-widest text-zinc-500 mb-2">Full Name</label>
-                    <input type="text" id="user_name" required class="w-full bg-white/5 border border-white/10 p-4 rounded-xl focus:border-emerald-500 outline-none transition" placeholder="আপনার নাম">
-                </div>
-                <div>
-                    <label class="block text-xs uppercase tracking-widest text-zinc-500 mb-2">Email Address</label>
-                    <input type="email" id="user_email" required class="w-full bg-white/5 border border-white/10 p-4 rounded-xl focus:border-emerald-500 outline-none transition" placeholder="example@mail.com">
-                </div>
-                <button type="submit" class="w-full bg-gradient-to-r from-emerald-500 to-cyan-500 py-4 rounded-xl font-bold text-black uppercase tracking-widest hover:scale-105 transition duration-300">
-                    রেজিস্ট্রেশন করুন
+            <form id="contact-form" class="space-y-6">
+                <input type="text" name="user_name" placeholder="আপনার নাম" required 
+                class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-emerald-400 transition text-white">
+                
+                <input type="email" name="user_email" placeholder="ইমেইল অ্যাড্রেস" required 
+                class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-emerald-400 transition text-white">
+                
+                <button type="submit" id="submit-btn" 
+                class="w-full bg-gradient-to-r from-emerald-500 to-blue-600 py-4 rounded-2xl font-bold uppercase tracking-widest text-black hover:brightness-110 transition active:scale-95">
+                    সাবমিট করুন
                 </button>
             </form>
-            <p id="msg" class="mt-4 text-center text-sm font-semibold"></p>
-        </section>
-    </main>
-
-    <footer class="py-10 text-center text-zinc-700 text-xs tracking-[0.3em] uppercase">
-        Developed by Md Amin Ali &copy; 2026 | Global Visionary
-    </footer>
+            <p id="response-msg" class="mt-6 text-center text-sm font-semibold"></p>
+        </div>
+    </div>
 
     <script>
-        // EmailJS Initialize (আপনার নিজের UserID এখানে বসাতে হবে)
-        (function() {
-            emailjs.init("YOUR_PUBLIC_KEY"); // এখানে EmailJS থেকে পাওয়া Public Key বসান
-        })();
-
-        document.getElementById('regForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const btn = event.target.querySelector('button');
-            const msg = document.getElementById('msg');
-            
-            btn.innerText = "প্রসেসিং হচ্ছে...";
-            btn.disabled = true;
-
-            // এটি একটি ডেমো অটো-রেসপন্স লজিক
-            // আসল ইমেইল পাঠাতে EmailJS এর Service ID ও Template ID লাগবে।
-            
-            setTimeout(() => {
-                msg.style.color = "#00ffcc";
-                msg.innerText = "আপনার ইমেইলটি সম্পূর্ণভাবে আমরা গ্রহণ করছি! চেক করুন।";
-                btn.innerText = "সফল হয়েছে";
-                
-                // ফর্ম রিসেট
-                event.target.reset();
-            }, 2000);
-        });
-
-        // ডাইনামিক ডটস তৈরি
-        for (let i = 0; i < 20; i++) {
+        // ব্যাকগ্রাউন্ড ম্যাপ ডটস জেনারেটর
+        const map = document.getElementById('map');
+        const colors = ['#00ffcc', '#ff00ff', '#007cf0', '#ffff00'];
+        for (let i = 0; i < 60; i++) {
             let dot = document.createElement('div');
             dot.className = 'dot';
+            dot.style.width = Math.random() * 4 + 'px';
+            dot.style.height = dot.style.width;
             dot.style.top = Math.random() * 100 + '%';
             dot.style.left = Math.random() * 100 + '%';
-            dot.style.animationDelay = Math.random() * 2 + 's';
-            dot.style.background = `hsl(${Math.random() * 360}, 70%, 60%)`;
-            document.querySelector('.map-bg').appendChild(dot);
+            dot.style.background = colors[Math.floor(Math.random() * colors.length)];
+            dot.style.boxShadow = `0 0 10px ${dot.style.background}`;
+            dot.style.animationDelay = Math.random() * 5 + 's';
+            map.appendChild(dot);
         }
+
+        // EmailJS Integration লজিক
+        (function() {
+            // আপনার EmailJS Public Key এখানে বসান
+            emailjs.init("YOUR_PUBLIC_KEY"); 
+        })();
+
+        document.getElementById('contact-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const msg = document.getElementById('response-msg');
+
+            btn.innerText = "পাঠানো হচ্ছে...";
+            btn.disabled = true;
+
+            // EmailJS এর মাধ্যমে ইমেইল পাঠানো
+            emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', this)
+                .then(function() {
+                    msg.style.color = "#00ffcc";
+                    msg.innerText = "আপনার ইমেইলটি সম্পূর্ণভাবে আমরা গ্রহণ করছি!";
+                    btn.innerText = "সফল হয়েছে";
+                    document.getElementById('contact-form').reset();
+                }, function(error) {
+                    msg.style.color = "#ff4d4d";
+                    msg.innerText = "দুঃখিত! আবার চেষ্টা করুন।";
+                    btn.innerText = "ব্যর্থ হয়েছে";
+                    btn.disabled = false;
+                });
+        });
     </script>
 </body>
 </html>
