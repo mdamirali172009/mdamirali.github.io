@@ -1,176 +1,119 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Secret System</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
-
-<style>
-body {
-    background: radial-gradient(circle at center, #020617, #000);
-    overflow-x: hidden;
-}
-
-.glass {
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255,255,255,0.1);
-}
-
-.card {
-    transition: 0.6s;
-    transform-style: preserve-3d;
-}
-
-.card:hover {
-    transform: rotateY(180deg) scale(1.05);
-}
-
-.inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-
-.front, .back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-}
-
-.back {
-    transform: rotateY(180deg);
-}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mr. Amir Ali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .sphere { animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-30px); } }
+        .card-hover:hover { transform: translateY(-8px); }
+    </style>
 </head>
+<body class="bg-gradient-to-br from-[#0f172a] via-[#164e63] to-[#0f172a] text-white min-h-screen">
 
-<body class="text-white flex items-center justify-center min-h-screen">
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full bg-black/70 backdrop-blur-lg z-50 border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+            <h1 class="text-3xl font-bold">Mr. Amir Ali</h1>
+            <div class="flex gap-8 text-lg">
+                <a href="#contact" class="hover:text-cyan-400 transition">যোগাযোগ</a>
+                <a href="#register" class="hover:text-cyan-400 transition">রেজিস্ট্রেশন</a>
+            </div>
+        </div>
+    </nav>
 
-<div class="text-center">
+    <!-- Hero Section -->
+    <div class="min-h-screen flex items-center justify-center pt-20 relative px-6">
+        <div class="absolute left-10 top-20 w-80 h-80 bg-cyan-400/20 rounded-full blur-3xl sphere"></div>
+        <div class="absolute right-10 bottom-20 w-96 h-96 bg-teal-400/20 rounded-full blur-3xl sphere" style="animation-delay: 2s;"></div>
 
-<h1 id="title" class="text-5xl font-bold mb-10"></h1>
+        <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+            <div class="text-center md:text-left">
+                <h2 class="text-7xl font-bold leading-none mb-4">স্বাগতম!</h2>
+                <p class="text-5xl font-semibold text-cyan-300">Mr. Amir Ali</p>
+                <p class="text-xl text-gray-300 mt-6">আমার ব্যক্তিগত ওয়েবসাইট</p>
+            </div>
 
-<div id="cards" class="grid grid-cols-2 md:grid-cols-3 gap-6"></div>
+            <!-- Registration Form -->
+            <div id="register" class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-10">
+                <form id="registrationForm" class="space-y-6">
+                    <input type="text" id="name" placeholder="আপনার পুরো নাম" required class="w-full bg-white/10 border border-white/30 rounded-2xl px-6 py-5 focus:outline-none focus:border-cyan-400">
+                    <input type="tel" id="mobile" placeholder="মোবাইল নম্বর" required class="w-full bg-white/10 border border-white/30 rounded-2xl px-6 py-5 focus:outline-none focus:border-cyan-400">
+                    <input type="email" id="email" placeholder="ইমেইল অ্যাড্রেস" required class="w-full bg-white/10 border border-white/30 rounded-2xl px-6 py-5 focus:outline-none focus:border-cyan-400">
+                    
+                    <button type="submit" class="w-full py-6 bg-cyan-400 hover:bg-cyan-500 text-black font-bold rounded-3xl text-xl">রেজিস্ট্রেশন করুন</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
-</div>
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-black/40">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-12 text-cyan-300">যোগাযোগের তথ্য</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <!-- Mobile -->
+                <div class="card-hover bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 text-center">
+                    <i class="fas fa-phone text-5xl text-cyan-400 mb-4"></i>
+                    <p class="font-medium">মোবাইল</p>
+                    <a href="tel:+8801840364137" class="block mt-2 text-cyan-300 text-xl">+8801840364137</a>
+                </div>
+                <!-- WhatsApp -->
+                <div class="card-hover bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 text-center">
+                    <i class="fab fa-whatsapp text-5xl text-green-400 mb-4"></i>
+                    <p class="font-medium">হোয়াটসঅ্যাপ</p>
+                    <a href="https://wa.me/8801840364137" target="_blank" class="block mt-2 text-cyan-300 text-xl">+8801840364137</a>
+                </div>
+                <!-- Facebook -->
+                <div class="card-hover bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 text-center">
+                    <i class="fab fa-facebook text-5xl text-blue-400 mb-4"></i>
+                    <p class="font-medium">ফেসবুক</p>
+                    <a href="https://facebook.com/mdaminall172009" target="_blank" class="block mt-2 text-cyan-300 text-xl">facebook.com/mdaminall172009</a>
+                </div>
+                <!-- Instagram -->
+                <div class="card-hover bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 text-center">
+                    <i class="fab fa-instagram text-5xl text-pink-400 mb-4"></i>
+                    <p class="font-medium">ইনস্টাগ্রাম</p>
+                    <a href="https://instagram.com/mdaminall172009" target="_blank" class="block mt-2 text-cyan-300 text-xl">@mdaminall172009</a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<script>
+    <footer class="py-10 text-center text-gray-400">© ২০২৬ Mr. Amir Ali • GitHub Pages</footer>
 
-// ================== ANTI DEBUG 😈 ==================
-setInterval(() => {
-    if (window.outerWidth - window.innerWidth > 200) {
-        document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:50px;'>⚠️ Access Denied</h1>";
-    }
-}, 1000);
+    <script>
+        // ================== EmailJS সেটআপ (এখানে তোমার কী বসাও) ==================
+        (function() {
+            emailjs.init("YOUR_PUBLIC_KEY_HERE");   // ← এখানে তোমার EmailJS Public Key বসাও
+        })();
 
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
 
-// ================== ENCODED REAL DATA 🔐 ==================
-const secretData = [
-    "RmFjZWJvb2s6aHR0cHM6Ly9mYi5jb20vWU9VUl9JRA==",
-    "SW5zdGFncmFtOmh0dHBzOi8vaW5zdGFncmFtLmNvbS9ZT1VSX0lE",
-    "V2hhdHNBcHA6ODgwMTcxMjM0NTY3OA==",
-    "TW9iaWxlOjAxNzEyMzQ1Njc4"
-];
+            const formData = {
+                name: document.getElementById('name').value,
+                mobile: document.getElementById('mobile').value,
+                email: document.getElementById('email').value,
+                date: new Date().toLocaleString('bn-BD')
+            };
 
-// ================== FAKE DATA 😏 ==================
-const fakeData = [
-    "Facebook: error_loading",
-    "Instagram: private_user",
-    "WhatsApp: hidden",
-    "Mobile: unknown"
-];
-
-// decode function
-function decode(str) {
-    return atob(str);
-}
-
-// random delay reveal
-function revealData() {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            const real = secretData.map(decode);
-            resolve(real);
-        }, Math.random() * 2000 + 1000);
-    });
-}
-
-// ================== UI GENERATE ==================
-async function createUI() {
-
-    document.getElementById("title").innerText = "Welcome System";
-
-    const container = document.getElementById("cards");
-
-    // first show fake
-    fakeData.forEach(item => {
-        const div = createCard(item);
-        container.appendChild(div);
-    });
-
-    // then replace with real (smooth)
-    const realData = await revealData();
-
-    container.innerHTML = "";
-
-    realData.forEach(item => {
-        const div = createCard(item, true);
-        container.appendChild(div);
-    });
-}
-
-// ================== CARD ==================
-function createCard(text, real=false) {
-
-    const div = document.createElement("div");
-    div.className = "card glass rounded-3xl p-6 h-40 cursor-pointer";
-
-    const inner = document.createElement("div");
-    inner.className = "inner";
-
-    const front = document.createElement("div");
-    front.className = "front flex items-center justify-center text-lg";
-    front.innerText = real ? "🔐 Tap" : text;
-
-    const back = document.createElement("div");
-    back.className = "back flex items-center justify-center text-sm text-green-400";
-    back.innerText = text;
-
-    inner.appendChild(front);
-    inner.appendChild(back);
-    div.appendChild(inner);
-
-    // click copy
-    div.onclick = () => {
-        if(real){
-            navigator.clipboard.writeText(text);
-            div.style.background = "green";
-        }
-    };
-
-    return div;
-}
-
-// ================== TYPE EFFECT ==================
-let nameText = "Md Amin Ali";
-let i = 0;
-
-function typeEffect() {
-    if (i < nameText.length) {
-        document.getElementById("title").innerHTML += nameText.charAt(i);
-        i++;
-        setTimeout(typeEffect, 80);
-    }
-}
-
-typeEffect();
-createUI();
-
-</script>
-
+            // তোমার ইমেইলে নোটিফিকেশন
+            emailjs.send("YOUR_SERVICE_ID", "registration-notification", formData);
+            
+            // ইউজারকে কনফার্মেশন মেইল
+            emailjs.send("YOUR_SERVICE_ID", "registration-confirmation", formData)
+                .then(() => {
+                    alert("🎉 রেজিস্ট্রেশন সফল হয়েছে!\nকনফার্মেশন ইমেইল পাঠানো হয়েছে।");
+                    document.getElementById('registrationForm').reset();
+                });
+        });
+    </script>
 </body>
 </html>
