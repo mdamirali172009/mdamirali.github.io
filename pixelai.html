@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixelAI — AI ফটো এডিটর</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        :root {
+            --tw-color-primary: #00f5ff;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .logo-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .canvas-container {
+            background: linear-gradient(45deg, #1a1a2e, #0f0f1f);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgb(0 245 255 / 0.2);
+        }
+
+        .drop-zone {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .drop-zone.active {
+            border-color: #00f5ff;
+            background-color: rgba(0, 245, 255, 0.1);
+            transform: scale(1.02);
+        }
+        
+        .ai-button {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .ai-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgb(0 245 255 / 0.3);
+        }
+    </style>
+</head>
+<body class="bg-[#0a0a0f] text-white min-h-screen">
+    <!-- Navbar -->
+    <nav class="border-b border-white/10 bg-[#0a0a0f]/80 backdrop-blur-xl sticky top-0 z-50">
+        <div class="max-w-screen-2xl mx-auto px-8 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-9 h-9 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-2xl flex items-center justify-center text-2xl shadow-lg shadow-cyan-500/50">
+                    ✨
+                </div>
+                <h1 class="logo-font text-3xl tracking-tighter">PixelAI</h1>
+                <span class="text-xs font-medium bg-cyan-500/10 text-cyan-400 px-3 py-1 rounded-3xl border border-cyan-400/30">AI ফটো এডিটর</span>
+            </div>
+            
+            <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
+                <a href="#" onclick="showSection('home')" class="hover:text-cyan-400 transition-colors">হোম</a>
+                <a href="#" onclick="showSection('editor')" class="hover:text-cyan-400 transition-colors">এডিটর</a>
+                <a href="#" class="hover:text-cyan-400 transition-colors">ফিচারস</a>
+                <a href="#" class="hover:text-cyan-400 transition-colors">প্রাইসিং</a>
+                <a href="#" class="hover:text-cyan-400 transition-colors">ব্লগ</a>
+            </div>
+            
+            <div class="flex items-center gap-x-4">
+                <div class="flex items-center bg-white/5 text-white text-sm font-medium px-5 h-10 rounded-3xl border border-white/10">
+                    <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse mr-2"></div>
+                    AI অনলাইন
+                </div>
+                <button onclick="fakeLogin()" 
+                        class="bg-white text-black font-semibold px-6 h-10 rounded-3xl hover:bg-cyan-400 hover:text-black transition-all flex items-center gap-x-2">
+                    <span>লগইন</span>
+                    <span class="text-xl">👾</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO + UPLOAD SECTION -->
+    <div id="home-section" class="max-w-screen-2xl mx-auto px-8 py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-8">
+                <div class="inline-flex items-center gap-x-2 bg-white/5 border border-white/10 text-cyan-400 text-sm font-medium px-5 py-2 rounded-3xl">
+                    <span class="relative flex h-3 w-3">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-cyan-400"></span>
+                    </span>
+                    Grok AI দিয়ে তৈরি • রিয়েল-টাইম এডিটিং
+                </div>
+                
+                <h1 class="text-6xl lg:text-7xl font-semibold leading-none logo-font tracking-tighter">
+                    আপনার ছবিকে<br>AI দিয়ে জাদু করুন
+                </h1>
+                
+                <p class="text-xl text-gray-400 max-w-md">
+                    এক ক্লিকে ব্যাকগ্রাউন্ড মুছুন, এনহ্যান্স করুন, স্টাইল চেঞ্জ করুন। 
+                    কোনো সফটওয়্যার লাগবে না — শুধু ব্রাউজারে!
+                </p>
+                
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="document.getElementById('upload-input-hero').click()" 
+                            class="bg-gradient-to-r from-cyan-400 to-purple-500 text-black font-semibold text-lg px-10 py-5 rounded-3xl flex items-center gap-x-3 hover:scale-105 transition-transform">
+                        <span>ছবি আপলোড করুন</span>
+                        <span class="text-3xl">📸</span>
+                    </button>
+                    <input type="file" id="upload-input-hero" accept="image/*" class="hidden" onchange="handleUpload(event)">
+                    
+                    <button onclick="demoImage()" 
+                            class="border border-white/30 hover:border-white/70 font-medium text-lg px-8 py-5 rounded-3xl transition-all">
+                        ডেমো ছবি দেখুন
+                    </button>
+                </div>
+                
+                <div class="flex items-center gap-x-8 text-sm text-gray-400">
+                    <div class="flex -space-x-4">
+                        <div class="w-8 h-8 bg-purple-500 rounded-2xl flex items-center justify-center text-xs ring-2 ring-[#0a0a0f]">🪄</div>
+                        <div class="w-8 h-8 bg-cyan-500 rounded-2xl flex items-center justify-center text-xs ring-2 ring-[#0a0a0f]">✨</div>
+                        <div class="w-8 h-8 bg-pink-500 rounded-2xl flex items-center justify-center text-xs ring-2 ring-[#0a0a0f]">🌟</div>
+                    </div>
+                    <p>১০ লক্ষ+ ইউজার এডিট করেছে আজ</p>
+                </div>
+            </div>
+            
+            <!-- Preview Card -->
+            <div class="relative">
+                <div class="canvas-container p-3 bg-gradient-to-br from-cyan-400/10 to-purple-500/10 rounded-3xl">
+                    <img id="hero-preview" src="https://picsum.photos/id/1015/800/800" 
+                         alt="AI edited photo" 
+                         class="rounded-3xl shadow-2xl w-full aspect-square object-cover">
+                    <div class="absolute bottom-8 left-8 bg-black/70 backdrop-blur-md text-white text-sm px-5 py-2 rounded-3xl flex items-center gap-x-3">
+                        <span class="text-cyan-400">🤖</span>
+                        <span>AI এনহ্যান্সড • ২ সেকেন্ড আগে</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN EDITOR SECTION -->
+    <div id="editor-section" class="max-w-screen-2xl mx-auto px-8 pb-16 hidden">
+        <div class="flex justify-between items-end mb-8">
+            <div>
+                <h2 class="text-4xl font-semibold logo-font tracking-tighter">এডিটিং স্টুডিও</h2>
+                <p class="text-gray-400">ছবিটি AI দিয়ে এডিট করুন — লাইভ প্রিভিউ</p>
+            </div>
+            
+            <div class="flex items-center gap-x-4">
+                <button onclick="resetEditor()" 
+                        class="flex items-center gap-x-2 text-sm font-medium px-6 h-11 border border-white/20 rounded-3xl hover:bg-white/5">
+                    <span>রিসেট</span>
+                </button>
+                <button onclick="downloadImage()" 
+                        class="bg-white text-black font-semibold px-8 h-11 rounded-3xl flex items-center gap-x-2 hover:bg-cyan-400">
+                    <span>ডাউনলোড PNG</span>
+                    <span class="text-xl">↓</span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+            <!-- Canvas Area -->
+            <div class="xl:col-span-8 canvas-container p-4">
+                <canvas id="canvas" class="w-full rounded-2xl bg-white/5 max-h-[640px]"></canvas>
+            </div>
+            
+            <!-- Tools Panel -->
+            <div class="xl:col-span-4 bg-[#11111b] rounded-3xl p-7 flex flex-col">
+                <!-- AI Quick Tools -->
+                <h3 class="uppercase text-xs tracking-[1px] text-cyan-400 mb-4 font-medium">🤖 AI টুলস</h3>
+                <div class="grid grid-cols-2 gap-3 mb-8">
+                    <button onclick="aiEnhance()" 
+                            class="ai-button bg-gradient-to-br from-cyan-400 to-cyan-600 text-black h-14 rounded-3xl font-semibold flex flex-col items-center justify-center gap-y-0.5 text-sm">
+                        <span class="text-2xl">✨</span>
+                        এআই এনহ্যান্স
+                    </button>
+                    <button onclick="aiRemoveBackground()" 
+                            class="ai-button bg-gradient-to-br from-purple-400 to-purple-600 text-black h-14 rounded-3xl font-semibold flex flex-col items-center justify-center gap-y-0.5 text-sm">
+                        <span class="text-2xl">🪄</span>
+                        ব্যাকগ্রাউন্ড মুছুন
+                    </button>
+                    <button onclick="aiStyleTransfer()" 
+                            class="ai-button bg-gradient-to-br from-pink-400 to-pink-600 text-black h-14 rounded-3xl font-semibold flex flex-col items-center justify-center gap-y-0.5 text-sm">
+                        <span class="text-2xl">🎨</span>
+                        স্টাইল চেঞ্জ
+                    </button>
+                    <button onclick="aiUpscale()" 
+                            class="ai-button bg-gradient-to-br from-amber-400 to-amber-600 text-black h-14 rounded-3xl font-semibold flex flex-col items-center justify-center gap-y-0.5 text-sm">
+                        <span class="text-2xl">🔍</span>
+                        4K আপস্কেল
+                    </button>
+                </div>
+                
+                <!-- Manual Adjustments -->
+                <h3 class="uppercase text-xs tracking-[1px] text-gray-400 mb-4 font-medium">ম্যানুয়াল টুইকস</h3>
+                
+                <div class="space-y-6 flex-1">
+                    <!-- Brightness -->
+                    <div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span>ব্রাইটনেস</span>
+                            <span id="val-brightness" class="font-mono text-cyan-400">100%</span>
+                        </div>
+                        <input type="range" id="slider-brightness" min="50" max="150" value="100" step="1" 
+                               class="w-full accent-cyan-400" oninput="liveUpdate()">
+                    </div>
+                    
+                    <!-- Contrast -->
+                    <div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span>কনট্রাস্ট</span>
+                            <span id="val-contrast" class="font-mono text-cyan-400">100%</span>
+                        </div>
+                        <input type="range" id="slider-contrast" min="50" max="150" value="100" step="1" 
+                               class="w-full accent-cyan-400" oninput="liveUpdate()">
+                    </div>
+                    
+                    <!-- Saturation -->
+                    <div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span>স্যাচুরেশন</span>
+                            <span id="val-saturate" class="font-mono text-cyan-400">100%</span>
+                        </div>
+                        <input type="range" id="slider-saturate" min="0" max="200" value="100" step="1" 
+                               class="w-full accent-cyan-400" oninput="liveUpdate()">
+                    </div>
+                </div>
+                
+                <!-- Quick Filters -->
+                <h3 class="uppercase text-xs tracking-[1px] text-gray-400 mb-4 mt-auto pt-6 font-medium">কুইক ফিল্টার</h3>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="applyPresetFilter('grayscale(100%)')" 
+                            class="px-5 py-2 text-xs border border-white/20 rounded-3xl hover:border-cyan-400">B&amp;W</button>
+                    <button onclick="applyPresetFilter('sepia(80%)')" 
+                            class="px-5 py-2 text-xs border border-white/20 rounded-3xl hover:border-cyan-400">সেপিয়া</button>
+                    <button onclick="applyPresetFilter('invert(100%)')" 
+                            class="px-5 py-2 text-xs border border-white/20 rounded-3xl hover:border-cyan-400">ইনভার্ট</button>
+                    <button onclick="applyPresetFilter('hue-rotate(90deg)')" 
+                            class="px-5 py-2 text-xs border border-white/20 rounded-3xl hover:border-cyan-400">ভাইব্রেন্ট</button>
+                    <button onclick="applyPresetFilter('blur(2px)')" 
+                            class="px-5 py-2 text-xs border border-white/20 rounded-3xl hover:border-cyan-400">ব্লার</button>
+                    <button onclick="applyPresetFilter('contrast(150%) saturate(150%)')" 
+                            class="px-5 py-2 text-xs border border-white/20 rounded-3xl hover:border-cyan-400">সিনেম্যাটিক</button>
+                </div>
+                
+                <div class="mt-8 pt-6 border-t border-white/10 text-xs text-gray-400 flex items-center justify-between">
+                    <div>আপনার ছবি 100% প্রাইভেট</div>
+                    <div onclick="showAIChat()" class="cursor-pointer flex items-center gap-x-1 hover:text-cyan-400">
+                        AI চ্যাট <span class="text-lg">💬</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-black/40 border-t border-white/10 py-8">
+        <div class="max-w-screen-2xl mx-auto px-8 text-center text-xs text-gray-500">
+            তৈরি করা হয়েছে Grok AI দিয়ে • শুধুমাত্র ডেমো উদ্দেশ্যে। বাস্তব প্রোডাকশনে Replicate / Hugging Face API যোগ করুন
+        </div>
+    </footer>
+
+    <script>
+        // Tailwind script initialization
+        function initializeTailwind() {
+            return {
+                config(userConfig = {}) {
+                    return {
+                        configUser: userConfig,
+                        theme: {
+                            extend: {
+                                colors: {
+                                    primary: '#00f5ff'
+                                }
+                            }
+                        }
+                    }
+                },
+                theme(userConfig = {}) {
+                    return {
+                        ...this.defaultTheme(),
+                        ...this.config(userConfig).theme,
+                    }
+                },
+                defaultTheme() {
+                    return {}
+                }
+            }
+        }
+        
+        // Global variables
+        let originalImage = null
+        let canvas = null
+        let ctx = null
+        let currentWidth = 0
+        let currentHeight = 0
+        
+        // Initialize everything
+        function init() {
+            canvas = document.getElementById('canvas')
+            ctx = canvas.getContext('2d', { alpha: true })
+            
+            // Tailwind ready
+            initializeTailwind()
+            
+            console.log('%c✅ PixelAI এডিটর লোড হয়েছে!', 'color:#00f5ff; font-family:monospace; font-size:13px')
+        }
+        
+        // Handle file upload from anywhere
+        function handleUpload(e) {
+            const file = e.target.files[0]
+            if (!file) return
+            processFile(file)
+        }
+        
+        function processFile(file) {
+            if (!file.type.startsWith('image/')) {
+                alert('শুধু ছবি আপলোড করুন!')
+                return
+            }
+            
+            const reader = new FileReader()
+            reader.onload = function(event) {
+                const img = new Image()
+                img.onload = function() {
+                    originalImage = img
+                    
+                    // Responsive canvas size
+                    const maxWidth = 780
+                    currentWidth = img.width > maxWidth ? maxWidth : img.width
+                    currentHeight = Math.round((img.height / img.width) * currentWidth)
+                    
+                    canvas.width = currentWidth
+                    canvas.height = currentHeight
+                    
+                    // Draw initial image
+                    ctx.clearRect(0, 0, canvas.width, canvas.height)
+                    ctx.filter = 'none'
+                    ctx.drawImage(originalImage, 0, 0, currentWidth, currentHeight)
+                    
+                    // Switch to editor
+                    document.getElementById('home-section').classList.add('hidden')
+                    document.getElementById('editor-section').classList.remove('hidden')
+                    
+                    console.log('✅ ছবি লোড হয়েছে')
+                }
+                img.src = event.target.result
+            }
+            reader.readAsDataURL(file)
+        }
+        
+        // Live filter update from sliders
+        function liveUpdate() {
+            if (!originalImage) return
+            
+            const brightness = document.getElementById('slider-brightness').value
+            const contrast = document.getElementById('slider-contrast').value
+            const saturate = document.getElementById('slider-saturate').value
+            
+            // Update values
+            document.getElementById('val-brightness').textContent = brightness + '%'
+            document.getElementById('val-contrast').textContent = contrast + '%'
+            document.getElementById('val-saturate').textContent = saturate + '%'
+            
+            // Apply filter
+            ctx.filter = `brightness(\( {brightness}%) contrast( \){contrast}%) saturate(${saturate}%)`
+            ctx.drawImage(originalImage, 0, 0, currentWidth, currentHeight)
+        }
+        
+        // AI Enhance
+        function aiEnhance() {
+            if (!originalImage) return
+            
+            // Simulate AI thinking
+            const btns = document.querySelectorAll('.ai-button')
+            btns.forEach(b => b.style.pointerEvents = 'none')
+            
+            ctx.filter = 'none'
+            ctx.drawImage(originalImage, 0, 0, currentWidth, currentHeight)
+            
+            setTimeout(() => {
+                // AI magic numbers
+                document.getElementById('slider-brightness').value = 115
+                document.getElementById('slider-contrast').value = 125
+                document.getElementById('slider-saturate').value = 135
+                
+                liveUpdate()
+                
+                // Show toast
+                showToast('🎉 AI এনহ্যান্স সম্পন্ন! ছবি আরও সুন্দর হয়েছে')
+                
+                btns.forEach(b => b.style.pointerEvents = 'all')
+            }, 1200)
+        }
+        
+        // Remove Background (Demo)
+        function aiRemoveBackground() {
+            if (!originalImage) return
+            
+            showToast('🧠 AI প্রসেসিং চলছে... (Remove.bg মডেল সিমুলেটেড)')
+            
+            setTimeout(() => {
+                // Demo effect: make it look like transparent by adding a nice border and slight shadow
+                ctx.save()
+                ctx.filter = 'contrast(120%) brightness(110%)'
+                ctx.drawImage(originalImage, 0, 0, currentWidth, currentHeight)
+                
+                // Fake transparent background with checker pattern (simple simulation)
+                ctx.shadowColor = '#00f5ff'
+                ctx.shadowBlur = 30
+                ctx.strokeStyle = 'rgba(0,245,255,0.6)'
+                ctx.lineWidth = 12
+                ctx.strokeRect(30, 30, currentWidth - 60, currentHeight - 60)
+                ctx.restore()
+                
+                showToast('✅ ব্যাকগ্রাউন্ড মুছে ফেলা হয়েছে! (ডেমো)')
+                
+                // Real app এখানে Replicate / remove.bg API কল হতো
+                console.log('🔥 বাস্তবে এখানে AI background removal API কল হবে')
+            }, 1600)
+        }
+        
+        // Style Transfer
+        function aiStyleTransfer() {
+            showToast('🎨 AI স্টাইল ট্রান্সফার চলছে...')
+            setTimeout(() => {
+                applyPresetFilter('sepia(30%) contrast(130%) saturate(140%)')
+                showToast('🌈 নতুন স্টাইল অ্যাপ্লাই হয়েছে!')
+            }, 900)
+        }
+        
+        // Upscale
+        function aiUpscale() {
+            showToast('🔥 4K আপস্কেল চলছে...')
+            setTimeout(() => {
+                // Just enhance for demo
+                document.getElementById('slider-brightness').value = 108
+                document.getElementById('slider-contrast').value = 118
+                document.getElementById('slider-saturate').value = 125
+                liveUpdate()
+                showToast('📈 ছবি 4K কোয়ালিটিতে আপগ্রেড হয়েছে')
+            }, 1400)
+        }
+        
+        // Preset filter
+        function applyPresetFilter(filterString) {
+            if (!originalImage) return
+            ctx.filter = filterString
+            ctx.drawImage(originalImage, 0, 0, currentWidth, currentHeight)
+            
+            // Reset sliders to default after preset
+            document.getElementById('slider-brightness').value = 100
+            document.getElementById('slider-contrast').value = 100
+            document.getElementById('slider-saturate').value = 100
+        }
+        
+        // Download final image
+        function downloadImage() {
+            if (!canvas) return
+            const link = document.createElement('a')
+            link.download = 'pixelai-edited-photo.png'
+            link.href = canvas.toDataURL('image/png')
+            link.click()
+            showToast('📥 ছবি ডাউনলোড হয়েছে!')
+        }
+        
+        // Reset editor
+        function resetEditor() {
+            if (confirm('সব এডিট মুছে আবার শুরু করবেন?')) {
+                ctx.filter = 'none'
+                ctx.drawImage(originalImage, 0, 0, currentWidth, currentHeight)
+                
+                // Reset sliders
+                document.getElementById('slider-brightness').value = 100
+                document.getElementById('slider-contrast').value = 100
+                document.getElementById('slider-saturate').value = 100
+                liveUpdate()
+            }
+        }
+        
+        // Demo image
+        function demoImage() {
+            const demoUrl = 'https://picsum.photos/id/1015/1200/1200'
+            const img = new Image()
+            img.crossOrigin = "anonymous"
+            img.onload = () => {
+                originalImage = img
+                currentWidth = 720
+                currentHeight = 720
+                canvas.width = currentWidth
+                canvas.height = currentHeight
+                ctx.drawImage(img, 0, 0, currentWidth, currentHeight)
+                
+                document.getElementById('home-section').classList.add('hidden')
+                document.getElementById('editor-section').classList.remove('hidden')
+            }
+            img.src = demoUrl
+        }
+        
+        // Fake login
+        function fakeLogin() {
+            alert('🎟️ Welcome to PixelAI Premium!\n\nআপনার অ্যাকাউন্ট তৈরি হয়েছে। আসল AI API এখন সক্রিয়।')
+        }
+        
+        // Toast notification
+        function showToast(message) {
+            const toast = document.createElement('div')
+            toast.style.cssText = `
+                position: fixed; bottom: 30px; left: 30px; background: #11111b; 
+                color: white; padding: 16px 24px; border-radius: 9999px; 
+                box-shadow: 0 10px 15px -3px rgb(0 245 255 / 0.3); 
+                display: flex; align-items: center; gap: 12px; z-index: 9999;
+                border: 1px solid #00f5ff; animation: pop 0.3s ease;
+            `
+            toast.innerHTML = `
+                ${message}
+                <span onclick="this.parentElement.remove()" class="ml-4 cursor-pointer text-xl leading-none">×</span>
+            `
+            document.body.appendChild(toast)
+            
+            setTimeout(() => {
+                if (toast) toast.style.opacity = '0'
+                setTimeout(() => toast && toast.remove(), 300)
+            }, 3400)
+        }
+        
+        // Simple AI chat modal
+        function showAIChat() {
+            const prompt = prompt('AI কে বলুন কী করতে চান:\nউদাহরণ: "ছবিটাকে সানসেট বানাও" বা "আমাকে আরও সুন্দর দেখাও"')
+            if (prompt) {
+                showToast('🤖 AI চিন্তা করছে: ' + prompt)
+                setTimeout(() => {
+                    applyPresetFilter('brightness(120%) saturate(160%)')
+                    showToast('✅ আপনার অনুরোধ অনুযায়ী এডিট সম্পন্ন!')
+                }, 1200)
+            }
+        }
+        
+        // Section switcher (for future pages)
+        function showSection(section) {
+            if (section === 'editor' && originalImage) {
+                document.getElementById('home-section').classList.add('hidden')
+                document.getElementById('editor-section').classList.remove('hidden')
+            }
+        }
+        
+        // Start the app
+        window.onload = init
+    </script>
+</body>
+</html>
