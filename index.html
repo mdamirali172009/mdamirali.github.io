@@ -1,515 +1,99 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>xEdit AI Studio Pro — নতুন প্রিমিয়াম ডিজাইন</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
-        
-        :root {
-            --primary: #00ffcc;     /* নতুন নিয়ন টিল */
-            --accent: #ff00aa;      /* হট ম্যাজেন্টা */
-            --dark: #0a0814;
-            --glass: rgba(15, 12, 35, 0.75);
-        }
-        
-        body {
-            font-family: 'Inter', system_ui, sans-serif;
-            background: linear-gradient(135deg, #0a0814 0%, #1a1133 100%);
-            color: white;
-        }
-        
-        .logo-font {
-            font-family: 'Space Grotesk', sans-serif;
-        }
+import sys
+from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
+                             QHBoxLayout, QPushButton, QLabel, QFileDialog, 
+                             QSlider, QStyle)
+from PyQt6.QtCore import Qt
+from moviepy.editor import VideoFileClip
 
-        .glass {
-            background: var(--glass);
-            backdrop-filter: blur(24px);
-            border: 1px solid rgba(0, 255, 204, 0.25);
-            box-shadow: 0 8px 32px -12px rgb(0 255 204);
-        }
+class PremiumVideoEditor(QMainWindow):
+    def __init__(self):
+        super().__init__()
 
-        .hero-bg {
-            background: linear-gradient(135deg, #0a0814 0%, #2a1b4d 100%);
-        }
+        self.setWindowTitle("ProEdit Elite - Next Gen Editor")
+        self.resize(1000, 700)
 
-        .step-card {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .step-card.active {
-            transform: scale(1.06);
-            box-shadow: 0 0 50px -10px rgb(0 255 204);
-            border-color: #00ffcc;
-        }
-
-        .canvas-container {
-            border: 4px solid var(--primary);
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 35px 70px -20px rgba(0, 255, 204, 0.3);
-        }
-
-        button {
-            transition: all 0.3s ease;
-        }
-        
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px -10px rgb(255 0 170);
-        }
-
-        .neon-text {
-            text-shadow: 0 0 20px var(--primary);
-        }
-
-        .log-line {
-            animation: fadeInLog 0.4s ease forwards;
-        }
-
-        @keyframes fadeInLog {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .tab-link.active {
-            color: var(--primary);
-            border-bottom: 3px solid var(--primary);
-        }
-    </style>
-</head>
-<body class="min-h-screen">
-
-    <!-- Navbar -->
-    <nav class="bg-[#0a0814]/90 border-b border-white/10 backdrop-blur-xl sticky top-0 z-50">
-        <div class="max-w-screen-2xl mx-auto px-8 py-5 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-11 h-11 bg-gradient-to-br from-[#00ffcc] to-[#ff00aa] rounded-3xl flex items-center justify-center text-3xl shadow-lg">⚡</div>
-                <h1 class="logo-font text-4xl tracking-tighter neon-text">x<span class="text-[#00ffcc]">Edit</span> AI Studio</h1>
-            </div>
-            
-            <div class="hidden md:flex items-center gap-8 text-sm font-medium">
-                <a onclick="switchTab(0)" class="tab-link flex items-center gap-2 hover:text-[#00ffcc] transition-colors active">🏠 হোম</a>
-                <a onclick="switchTab(1)" class="tab-link flex items-center gap-2 hover:text-[#00ffcc] transition-colors">🖼️ ফটো এডিট</a>
-                <a onclick="switchTab(2)" class="tab-link flex items-center gap-2 hover:text-[#00ffcc] transition-colors">🎬 ভিডিও এডিট</a>
-                <a onclick="switchTab(3)" class="tab-link flex items-center gap-2 hover:text-[#00ffcc] transition-colors">🔄 ৪-স্টেপ পাইপলাইন</a>
-                <a onclick="switchTab(4)" class="tab-link flex items-center gap-2 hover:text-[#00ffcc] transition-colors">🔌 AI টুলস</a>
-            </div>
-
-            <button onclick="startNewProject()" 
-                    class="bg-gradient-to-r from-[#00ffcc] to-[#ff00aa] text-black px-8 py-3.5 rounded-3xl font-bold flex items-center gap-3 hover:brightness-110 transition-all">
-                নতুন প্রজেক্ট শুরু করুন
-                <span class="text-2xl">✦</span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Hero -->
-    <div class="hero-bg py-24">
-        <div class="max-w-screen-2xl mx-auto px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                <div>
-                    <div class="inline-flex items-center gap-3 bg-white/10 px-6 py-3 rounded-3xl mb-8 border border-[#00ffcc]/30">
-                        <div class="w-4 h-4 bg-[#00ffcc] rounded-full animate-pulse"></div>
-                        <span class="font-bold text-[#00ffcc]">xAI + ChatGPT + Gemini + Meta AI সরাসরি সংযুক্ত</span>
-                    </div>
-                    <h1 class="text-6xl lg:text-7xl font-bold leading-none logo-font tracking-tighter neon-text mb-6">
-                        ৪টা AI একসাথে<br>প্রিমিয়াম এডিটিং
-                    </h1>
-                    <p class="text-2xl text-gray-300 max-w-xl">আধুনিক নিয়ন ডিজাইন • সিস্টেম্যাটিক লেআউট • প্রত্যেক স্টেপে আরও শক্তিশালী এডিট</p>
-                    
-                    <div class="flex gap-4 mt-12">
-                        <button onclick="switchTab(3)" 
-                                class="bg-gradient-to-r from-[#00ffcc] to-[#ff00aa] text-black font-bold px-12 py-6 rounded-3xl text-2xl flex items-center gap-4 hover:scale-105 transition-all">
-                            🚀 ৪-স্টেপ পাইপলাইন শুরু
-                        </button>
-                        <button onclick="showDemo()" 
-                                class="border border-[#00ffcc]/50 hover:border-[#00ffcc] px-10 py-6 rounded-3xl font-semibold text-xl">ডেমো দেখুন</button>
-                    </div>
-                </div>
-
-                <div class="canvas-container bg-[#0a0814] p-8">
-                    <img id="hero-preview" src="https://picsum.photos/id/1015/1200/800" 
-                         class="rounded-2xl w-full shadow-2xl" alt="Demo">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Content -->
-    <div id="tab-content" class="max-w-screen-2xl mx-auto px-8 py-12">
-
-        <!-- Tab 0: Home -->
-        <div id="tab-0" class="tab-panel">
-            <h2 class="text-5xl font-semibold mb-8">দ্রুত শুরু করুন</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div onclick="switchTab(1)" class="glass p-12 rounded-3xl cursor-pointer hover:border-[#ff00aa] border border-transparent">
-                    <div class="text-7xl mb-8">🖼️</div>
-                    <h3 class="text-3xl font-semibold mb-4">ফটো এডিটর</h3>
-                    <p class="text-gray-400 text-lg">৪টা AI একসাথে প্রফেশনাল ফটো তৈরি</p>
-                </div>
-                <div onclick="switchTab(2)" class="glass p-12 rounded-3xl cursor-pointer hover:border-[#ff00aa] border border-transparent">
-                    <div class="text-7xl mb-8">🎬</div>
-                    <h3 class="text-3xl font-semibold mb-4">ভিডিও এডিটর</h3>
-                    <p class="text-gray-400 text-lg">স্মার্ট কাট, ইফেক্ট ও মিউজিক</p>
-                </div>
-                <div onclick="switchTab(3)" class="glass p-12 rounded-3xl cursor-pointer bg-gradient-to-br from-[#00ffcc]/10 to-transparent border border-[#00ffcc]">
-                    <div class="text-7xl mb-8">🔄</div>
-                    <h3 class="text-3xl font-semibold mb-4">৪-স্টেপ AI পাইপলাইন</h3>
-                    <p class="text-gray-400 text-lg">xAI → ChatGPT → Gemini → Meta AI</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tab 1: Photo -->
-        <div id="tab-1" class="tab-panel hidden">
-            <div class="flex justify-between mb-8">
-                <div>
-                    <h2 class="text-5xl font-semibold">ফটো এডিটর</h2>
-                    <p class="text-gray-400">আপলোড করুন → AI স্বয়ংক্রিয় এডিট</p>
-                </div>
-                <div class="flex gap-4">
-                    <button onclick="resetMedia()" class="px-8 py-4 border border-white/30 rounded-3xl">রিসেট</button>
-                    <button onclick="downloadMedia()" class="px-10 py-4 bg-gradient-to-r from-[#00ffcc] to-[#ff00aa] text-black font-bold rounded-3xl">ডাউনলোড</button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-12 gap-8">
-                <div class="col-span-12 lg:col-span-8">
-                    <div class="canvas-container bg-[#0a0814] p-6">
-                        <div id="photo-upload-zone" onclick="document.getElementById('photo-upload').click()" 
-                             class="border-4 border-dashed border-[#00ffcc]/40 rounded-3xl h-[520px] flex flex-col items-center justify-center cursor-pointer hover:border-[#ff00aa]">
-                            <input type="file" id="photo-upload" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
-                            <div class="text-8xl mb-6">📸</div>
-                            <p class="text-3xl font-semibold">ছবি আপলোড করুন</p>
-                        </div>
-                        <div id="photo-preview-area" class="hidden">
-                            <canvas id="photo-canvas" class="w-full rounded-3xl"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-span-12 lg:col-span-4 space-y-6">
-                    <div class="glass p-8 rounded-3xl">
-                        <h4 class="font-bold text-xl mb-6 flex items-center gap-3"><span class="text-[#00ffcc]">⚡</span> দ্রুত AI টুলস</h4>
-                        <div class="grid grid-cols-2 gap-4">
-                            <button onclick="quickTool('remove-bg')" class="glass p-6 rounded-3xl text-left hover:bg-[#ff00aa]/10">ব্যাকগ্রাউন্ড রিমুভ</button>
-                            <button onclick="quickTool('upscale')" class="glass p-6 rounded-3xl text-left hover:bg-[#ff00aa]/10">৪K আপস্কেল</button>
-                            <button onclick="quickTool('colorize')" class="glass p-6 rounded-3xl text-left hover:bg-[#ff00aa]/10">কালারাইজ</button>
-                            <button onclick="quickTool('object-remove')" class="glass p-6 rounded-3xl text-left hover:bg-[#ff00aa]/10">অবজেক্ট রিমুভ</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tab 2: Video -->
-        <div id="tab-2" class="tab-panel hidden">
-            <h2 class="text-5xl font-semibold mb-8">ভিডিও এডিটর</h2>
-            <div class="glass rounded-3xl p-8">
-                <div id="video-upload-zone" onclick="document.getElementById('video-upload').click()" 
-                     class="border-4 border-dashed border-[#00ffcc]/40 rounded-3xl h-96 flex flex-col items-center justify-center cursor-pointer hover:border-[#ff00aa]">
-                    <input type="file" id="video-upload" accept="video/*" class="hidden" onchange="handleVideoUpload(event)">
-                    <div class="text-8xl mb-8">🎥</div>
-                    <p class="text-3xl">ভিডিও আপলোড করুন</p>
-                </div>
-                <div id="video-preview-area" class="hidden">
-                    <video id="video-player" controls class="w-full aspect-video rounded-3xl bg-black"></video>
-                    <button onclick="simulateFullVideoAI()" class="mt-8 w-full py-8 bg-gradient-to-r from-[#00ffcc] to-[#ff00aa] text-black font-bold text-3xl rounded-3xl">৪-স্টেপ AI দিয়ে এডিট করুন</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tab 3: Pipeline -->
-        <div id="tab-3" class="tab-panel hidden">
-            <h2 class="text-5xl font-semibold mb-3">৪-স্টেপ AI পাইপলাইন</h2>
-            <p class="text-gray-400 text-xl mb-10">xAI → ChatGPT → Gemini → Meta AI • প্রত্যেক স্টেপ সিস্টেম্যাটিক</p>
-            
-            <div class="flex flex-col lg:flex-row gap-10">
-                <!-- Steps -->
-                <div class="lg:w-96 space-y-6">
-                    <div onclick="selectPipelineStep(1)" id="step-card-1" class="step-card active glass p-8 rounded-3xl cursor-pointer border border-[#00ffcc]">
-                        <div class="flex gap-6">
-                            <div class="text-5xl">🚀</div>
-                            <div class="flex-1">
-                                <div class="text-[#00ffcc] text-sm font-bold">STEP 01 • xAI</div>
-                                <div class="text-2xl font-semibold">Grok Creative Analyzer</div>
-                                <p class="text-gray-400 text-sm mt-4">প্রাথমিক অ্যানালাইসিস ও ক্রিয়েটিভ বুস্ট</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div onclick="selectPipelineStep(2)" id="step-card-2" class="step-card glass p-8 rounded-3xl cursor-pointer">
-                        <div class="flex gap-6">
-                            <div class="text-5xl">🟢</div>
-                            <div class="flex-1">
-                                <div class="text-emerald-400 text-sm font-bold">STEP 02 • ChatGPT</div>
-                                <div class="text-2xl font-semibold">Insight Editor</div>
-                                <p class="text-gray-400 text-sm mt-4">কনটেন্ট ও টেক্সট ওভারলে</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div onclick="selectPipelineStep(3)" id="step-card-3" class="step-card glass p-8 rounded-3xl cursor-pointer">
-                        <div class="flex gap-6">
-                            <div class="text-5xl">♊</div>
-                            <div class="flex-1">
-                                <div class="text-blue-400 text-sm font-bold">STEP 03 • Gemini</div>
-                                <div class="text-2xl font-semibold">Enhance Pro</div>
-                                <p class="text-gray-400 text-sm mt-4">অবজেক্ট ডিটেকশন ও এনহ্যান্স</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div onclick="selectPipelineStep(4)" id="step-card-4" class="step-card glass p-8 rounded-3xl cursor-pointer">
-                        <div class="flex gap-6">
-                            <div class="text-5xl">🔷</div>
-                            <div class="flex-1">
-                                <div class="text-violet-400 text-sm font-bold">STEP 04 • Meta AI</div>
-                                <div class="text-2xl font-semibold">Vision Polisher</div>
-                                <p class="text-gray-400 text-sm mt-4">ফাইনাল পলিশ ও প্রফেশনাল গ্রেড</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Preview & Controls -->
-                <div class="flex-1 glass rounded-3xl p-8">
-                    <div class="canvas-container">
-                        <canvas id="pipeline-canvas" class="w-full max-h-[420px]"></canvas>
-                    </div>
-
-                    <div class="mt-8 flex items-center justify-between">
-                        <div id="current-step-display" class="font-bold text-2xl">Step 1 • xAI চলছে...</div>
-                        <div class="flex gap-4">
-                            <button onclick="runPipelineStep()" id="run-btn" 
-                                    class="px-12 py-5 bg-gradient-to-r from-[#00ffcc] to-[#ff00aa] text-black font-bold text-xl rounded-3xl">
-                                <span id="run-btn-text">xAI দিয়ে প্রসেস করুন</span>
-                            </button>
-                            <button onclick="nextPipelineStep()" class="px-12 py-5 border border-[#00ffcc]/40 rounded-3xl hover:bg-white/10">পরবর্তী →</button>
-                        </div>
-                    </div>
-
-                    <div id="pipeline-log" class="mt-8 bg-[#0a0814] rounded-3xl p-6 font-mono text-sm h-64 overflow-auto space-y-3"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tab 4: Tools -->
-        <div id="tab-4" class="tab-panel hidden">
-            <h2 class="text-5xl font-semibold mb-10">সংযুক্ত AI টুলস</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div class="glass p-8 rounded-3xl text-center hover:border-[#00ffcc]">
-                    <div class="text-7xl mb-6">🚀</div>
-                    <h4 class="text-2xl font-semibold">xAI Grok</h4>
-                    <p class="text-[#00ffcc] text-sm">Creative Analyzer</p>
-                </div>
-                <div class="glass p-8 rounded-3xl text-center hover:border-[#ff00aa]">
-                    <div class="text-7xl mb-6">🟢</div>
-                    <h4 class="text-2xl font-semibold">ChatGPT</h4>
-                    <p class="text-emerald-400 text-sm">Insight Editor</p>
-                </div>
-                <div class="glass p-8 rounded-3xl text-center hover:border-[#00ffcc]">
-                    <div class="text-7xl mb-6">♊</div>
-                    <h4 class="text-2xl font-semibold">Gemini</h4>
-                    <p class="text-blue-400 text-sm">Enhance Pro</p>
-                </div>
-                <div class="glass p-8 rounded-3xl text-center hover:border-[#ff00aa]">
-                    <div class="text-7xl mb-6">🔷</div>
-                    <h4 class="text-2xl font-semibold">Meta AI</h4>
-                    <p class="text-violet-400 text-sm">Vision Polisher</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function initTailwind() {
-            tailwind.config = { content: [] };
-        }
-
-        let currentMediaType = null;
-        let currentImage = null;
-        let canvas = null;
-        let ctx = null;
-        let editedDataURL = null;
-        let pipelineStage = 1;
-
-        function switchTab(n) {
-            document.querySelectorAll('.tab-panel').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`tab-${n}`).classList.remove('hidden');
-            
-            document.querySelectorAll('.tab-link').forEach(link => link.classList.remove('active'));
-            const links = document.querySelectorAll('.tab-link');
-            if (links[n]) links[n].classList.add('active');
-        }
-
-        function handlePhotoUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            currentMediaType = 'photo';
-            
-            const reader = new FileReader();
-            reader.onload = function(ev) {
-                currentImage = new Image();
-                currentImage.onload = function() {
-                    document.getElementById('photo-upload-zone').classList.add('hidden');
-                    const area = document.getElementById('photo-preview-area');
-                    area.classList.remove('hidden');
-                    
-                    canvas = document.getElementById('photo-canvas');
-                    ctx = canvas.getContext('2d');
-                    canvas.width = currentImage.width;
-                    canvas.height = currentImage.height;
-                    ctx.drawImage(currentImage, 0, 0);
-                    editedDataURL = canvas.toDataURL('image/png');
-                    loadIntoPipeline();
-                };
-                currentImage.src = ev.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function handleVideoUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            currentMediaType = 'video';
-            const url = URL.createObjectURL(file);
-            document.getElementById('video-upload-zone').classList.add('hidden');
-            const area = document.getElementById('video-preview-area');
-            area.classList.remove('hidden');
-            document.getElementById('video-player').src = url;
-        }
-
-        function quickTool(tool) {
-            if (!canvas) return alert("ছবি আপলোড করুন!");
-            let filter = '';
-            switch(tool) {
-                case 'remove-bg': filter = 'brightness(1.2) contrast(1.4)'; break;
-                case 'upscale': filter = 'contrast(1.6) saturate(1.4)'; break;
-                case 'colorize': filter = 'hue-rotate(30deg) saturate(2)'; break;
-                case 'object-remove': filter = 'brightness(0.9) saturate(0.75)'; break;
+        # প্রিমিয়াম ডার্ক থিম স্টাইলশিট
+        self.setStyleSheet("""
+            QMainWindow {
+                background-color: #121212;
             }
-            ctx.filter = filter;
-            ctx.drawImage(currentImage, 0, 0);
-            ctx.filter = 'none';
-            editedDataURL = canvas.toDataURL('image/png');
-            loadIntoPipeline();
-        }
-
-        function loadIntoPipeline() {
-            const pCanvas = document.getElementById('pipeline-canvas');
-            const pCtx = pCanvas.getContext('2d');
-            pCanvas.width = Math.min(currentImage.width, 900);
-            pCanvas.height = Math.min(currentImage.height, 480);
-            pCtx.drawImage(currentImage, 0, 0, pCanvas.width, pCanvas.height);
-        }
-
-        function selectPipelineStep(step) {
-            pipelineStage = step;
-            document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active'));
-            document.getElementById(`step-card-${step}`).classList.add('active');
-            
-            const btnTexts = {
-                1: {text: 'xAI দিয়ে প্রসেস করুন', info: 'Step 1 • xAI Grok চলছে...'},
-                2: {text: 'ChatGPT দিয়ে প্রসেস করুন', info: 'Step 2 • GPT Insight চলছে...'},
-                3: {text: 'Gemini দিয়ে প্রসেস করুন', info: 'Step 3 • Gemini Enhance চলছে...'},
-                4: {text: 'Meta AI দিয়ে প্রসেস করুন', info: 'Step 4 • Meta Polisher চলছে...'}
-            };
-            document.getElementById('run-btn-text').textContent = btnTexts[step].text;
-            document.getElementById('current-step-display').textContent = btnTexts[step].info;
-        }
-
-        function runPipelineStep() {
-            if (!currentImage) return alert("প্রথমে ছবি আপলোড করুন!");
-            const log = document.getElementById('pipeline-log');
-            
-            if (pipelineStage === 1) {
-                log.innerHTML += `<p class="log-line text-[#00ffcc]">[xAI] ক্রিয়েটিভ অ্যানালাইসিস সম্পন্ন</p>`;
-                ctx.filter = 'contrast(1.25) brightness(1.15)';
-                ctx.drawImage(currentImage, 0, 0);
-                ctx.filter = 'none';
-            } else if (pipelineStage === 2) {
-                log.innerHTML += `<p class="log-line text-emerald-400">[ChatGPT] কনটেন্ট ও টেক্সট যোগ করা হয়েছে</p>`;
-                ctx.filter = 'saturate(1.5)';
-                ctx.drawImage(currentImage, 0, 0);
-                ctx.filter = 'none';
-            } else if (pipelineStage === 3) {
-                log.innerHTML += `<p class="log-line text-blue-400">[Gemini] এনহ্যান্সমেন্ট সম্পন্ন</p>`;
-                ctx.filter = 'hue-rotate(20deg) contrast(1.3)';
-                ctx.drawImage(currentImage, 0, 0);
-                ctx.filter = 'none';
-            } else if (pipelineStage === 4) {
-                log.innerHTML += `<p class="log-line text-violet-400">[Meta AI] ফাইনাল পলিশ সম্পন্ন 🎉</p>`;
-                ctx.filter = 'brightness(1.1) saturate(1.1)';
-                ctx.drawImage(currentImage, 0, 0);
-                ctx.filter = 'none';
+            QPushButton {
+                background-color: #1DB954;
+                color: white;
+                border-radius: 8px;
+                padding: 10px;
+                font-weight: bold;
+                font-size: 14px;
             }
-            editedDataURL = canvas.toDataURL('image/png');
-            log.scrollTop = log.scrollHeight;
-            loadIntoPipeline();
-        }
-
-        function nextPipelineStep() {
-            if (pipelineStage < 4) {
-                pipelineStage++;
-                selectPipelineStep(pipelineStage);
-            } else {
-                alert('🎉 সব স্টেপ সম্পন্ন! ডাউনলোড করুন।');
+            QPushButton:hover {
+                background-color: #1ed760;
             }
-        }
+            QLabel {
+                color: #E0E0E0;
+                font-family: 'Segoe UI';
+            }
+            #PreviewArea {
+                background-color: #000000;
+                border: 2px solid #333;
+                border-radius: 10px;
+            }
+            QSlider::handle:horizontal {
+                background: #1DB954;
+                width: 18px;
+                border-radius: 9px;
+            }
+        """)
 
-        function simulateFullVideoAI() {
-            const area = document.getElementById('video-preview-area');
-            area.innerHTML += `
-                <div class="mt-8 p-8 bg-[#0a0814] rounded-3xl">
-                    <p class="text-[#00ffcc] mb-4">[xAI] অ্যানালাইসিস চলছে...</p>
-                    <p class="text-emerald-400 mb-4">[ChatGPT] ক্যাপশন তৈরি হচ্ছে...</p>
-                    <p class="text-blue-400 mb-4">[Gemini] ইফেক্ট যোগ করা হচ্ছে...</p>
-                    <p class="text-violet-400 mb-8">[Meta AI] ফাইনাল এডিট সম্পন্ন!</p>
-                    <button onclick="finishVideoDemo()" class="w-full py-7 bg-gradient-to-r from-[#00ffcc] to-[#ff00aa] text-black font-bold text-3xl rounded-3xl">ডাউনলোড এডিটেড ভিডিও</button>
-                </div>`;
-        }
+        self.initUI()
 
-        function finishVideoDemo() {
-            alert('✅ এডিট সম্পন্ন! (সিমুলেশন)');
-            location.reload();
-        }
+    def initUI(self):
+        main_layout = QVBoxLayout()
 
-        function downloadMedia() {
-            if (!editedDataURL) return alert("কোনো এডিটেড ফাইল নেই!");
-            const a = document.createElement('a');
-            a.download = 'xedit-ai-final.png';
-            a.href = editedDataURL;
-            a.click();
-        }
+        # --- উপরের অংশ: প্রিভিউ উইন্ডো ---
+        self.preview_label = QLabel("ভিডিও প্রিভিউ এখানে দেখা যাবে")
+        self.preview_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.preview_label.setObjectName("PreviewArea")
+        self.preview_label.setMinimumHeight(400)
+        main_layout.addWidget(self.preview_label)
 
-        function resetMedia() {
-            if (confirm('সব রিসেট করবেন?')) location.reload();
-        }
+        # --- মাঝের অংশ: কন্ট্রোলস ---
+        controls = QHBoxLayout()
+        
+        self.import_btn = QPushButton("Import Video")
+        self.import_btn.clicked.connect(self.import_video)
+        
+        self.play_btn = QPushButton()
+        self.play_btn.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_MediaPlay))
+        
+        self.export_btn = QPushButton("Export 4K")
+        self.export_btn.setStyleSheet("background-color: #6200EE;")
+        
+        controls.addWidget(self.import_btn)
+        controls.addWidget(self.play_btn)
+        controls.addWidget(self.export_btn)
+        main_layout.addLayout(controls)
 
-        function startNewProject() {
-            switchTab(1);
-        }
+        # --- নিচের অংশ: টাইমলাইন স্লাইডার ---
+        timeline_label = QLabel("Timeline / Seek Bar")
+        main_layout.addWidget(timeline_label)
+        
+        self.slider = QSlider(Qt.Orientation.Horizontal)
+        main_layout.addWidget(self.slider)
 
-        function showDemo() {
-            alert('ডেমো চালু! নতুন প্রিমিয়াম ডিজাইন টেস্ট করুন।');
-            switchTab(3);
-        }
+        central_widget = QWidget()
+        central_widget.setLayout(main_layout)
+        self.setCentralWidget(central_widget)
 
-        window.onload = function() {
-            initTailwind();
-            lucide.createIcons();
-            console.log('%c✅ নতুন প্রিমিয়াম ডিজাইন লোড হয়েছে!', 'color:#00ffcc;font-size:18px;font-weight:bold');
-            
-            let rot = 0;
-            setInterval(() => {
-                rot = (rot + 5) % 360;
-                const hero = document.getElementById('hero-preview');
-                if (hero) hero.style.transform = `rotate(${rot}deg)`;
-            }, 8000);
-        };
-    </script>
-</body>
-</html>
+    def import_video(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, "ভিডিও ফাইল সিলেক্ট করুন", "", "Video Files (*.mp4 *.avi *.mkv)")
+        if file_path:
+            self.preview_label.setText(f"Loaded: {file_path.split('/')[-1]}")
+            # এখানে ভিডিও লোড করার লজিক আসবে
+            video = VideoFileClip(file_path)
+            print(f"ভিডিও ডিউরেশন: {video.duration} seconds")
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    editor = PremiumVideoEditor()
+    editor.show()
+    sys.exit(app.exec())
