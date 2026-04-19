@@ -3,110 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MovieHub - Watch Movies Online</title>
-    <link rel="stylesheet" href="style.css">
+    <title>MovieHub - Upload & Watch</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #0b0f13; color: white; padding-bottom: 50px; }
+        
+        /* Navbar */
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: #141a21; position: sticky; top: 0; z-index: 100; border-bottom: 2px solid #e50914; }
+        .logo { font-size: 24px; font-weight: bold; }
+        .logo span { color: #e50914; }
+
+        /* Upload Box */
+        .upload-container { max-width: 800px; margin: 30px auto; background: #1c252e; padding: 30px; border-radius: 10px; text-align: center; border: 1px solid #333; }
+        .upload-container h2 { margin-bottom: 20px; color: #e50914; }
+        .input-group { margin-bottom: 15px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 5px; color: #ccc; }
+        .input-group input { width: 100%; padding: 10px; border-radius: 5px; border: none; background: #0b0f13; color: white; }
+        .upload-btn { width: 100%; padding: 12px; background: #e50914; border: none; color: white; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .upload-btn:hover { background: #b2070f; }
+
+        /* Movie Grid */
+        .container { padding: 0 5%; }
+        .section-title { margin: 40px 0 20px; font-size: 28px; border-left: 5px solid #e50914; padding-left: 15px; }
+        .movie-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        
+        .movie-card { background: #1c252e; border-radius: 8px; overflow: hidden; transition: 0.3s; position: relative; }
+        .movie-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(229, 9, 20, 0.3); }
+        .movie-card img { width: 100%; height: 280px; object-fit: cover; }
+        .movie-info { padding: 12px; text-align: center; }
+        .movie-info h3 { font-size: 16px; margin-bottom: 5px; }
+
+        /* Video Player Modal (Simple) */
+        .video-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; }
+        .video-container { width: 80%; max-width: 800px; background: #000; position: relative; }
+        .close-btn { position: absolute; top: -40px; right: 0; color: white; cursor: pointer; font-size: 30px; }
+        video { width: 100%; }
+    </style>
 </head>
 <body>
 
     <nav class="navbar">
         <div class="logo">MOVIE<span>HUB</span></div>
-        <ul class="nav-links">
-            <li><a href="#" class="active">Home</a></li>
-            <li><a href="#">Movies</a></li>
-            <li><a href="#">TV Shows</a></li>
-            <li><a href="#">New & Popular</a></li>
-        </ul>
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Search movies...">
-            <button onclick="searchMovie()"><i class="fas fa-search"></i></button>
-        </div>
+        <div style="color: #ccc; font-size: 14px;">World's Largest Collection</div>
     </nav>
 
-    <header class="hero">
-        <div class="hero-content">
-            <h1>Unlimited Movies & TV Shows</h1>
-            <p>Watch anywhere. Cancel anytime. Dive into the world of entertainment.</p>
-            <div class="hero-btns">
-                <button class="btn-play"><i class="fas fa-play"></i> Watch Now</button>
-                <button class="btn-list"><i class="fas fa-plus"></i> My List</button>
-            </div>
+    <div class="upload-container">
+        <h2><i class="fas fa-upload"></i> Upload Movie</h2>
+        <div class="input-group">
+            <label>Movie Title</label>
+            <input type="text" id="mTitle" placeholder="Enter movie name...">
         </div>
-    </header>
-
-    <div class="filters">
-        <button class="filter-btn active">All</button>
-        <button class="filter-btn">Action</button>
-        <button class="filter-btn">Comedy</button>
-        <button class="filter-btn">Sci-Fi</button>
-        <button class="filter-btn">Horror</button>
+        <div class="input-group">
+            <label>Poster Image (Select any image)</label>
+            <input type="file" id="mPoster" accept="image/*">
+        </div>
+        <div class="input-group">
+            <label>Video File (Select movie file)</label>
+            <input type="file" id="mVideo" accept="video/*">
+        </div>
+        <button class="upload-btn" onclick="addMovie()">PUBLISH MOVIE</button>
     </div>
 
-    <section class="movie-section">
-        <h2 class="section-title">Trending Now</h2>
-        <div class="movie-grid" id="movieGrid">
-            
-            <div class="movie-card">
-                <div class="badge">Trending</div>
-                <img src="https://via.placeholder.com/250x350" alt="Movie Poster">
-                <div class="movie-info">
-                    <h3>Inception</h3>
-                    <span class="rating"><i class="fas fa-star"></i> 8.8</span>
-                </div>
+    <div class="container">
+        <h2 class="section-title">Latest Uploads</h2>
+        <div class="movie-grid" id="movieList">
             </div>
+    </div>
 
-            <div class="movie-card">
-                <img src="https://via.placeholder.com/250x350" alt="Movie Poster">
-                <div class="movie-info">
-                    <h3>The Dark Knight</h3>
-                    <span class="rating"><i class="fas fa-star"></i> 9.0</span>
-                </div>
-            </div>
-
-            <div class="movie-card">
-                <div class="badge">HD</div>
-                <img src="https://via.placeholder.com/250x350" alt="Movie Poster">
-                <div class="movie-info">
-                    <h3>Interstellar</h3>
-                    <span class="rating"><i class="fas fa-star"></i> 8.7</span>
-                </div>
-            </div>
-
-            <div class="movie-card">
-                <img src="https://via.placeholder.com/250x350" alt="Movie Poster">
-                <div class="movie-info">
-                    <h3>Spider-Man</h3>
-                    <span class="rating"><i class="fas fa-star"></i> 8.1</span>
-                </div>
-            </div>
-
+    <div class="video-overlay" id="videoOverlay">
+        <div class="video-container">
+            <span class="close-btn" onclick="closePlayer()">&times;</span>
+            <video id="mainPlayer" controls></video>
         </div>
-    </section>
-
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2026 MovieHub Global | All Rights Reserved</p>
-            <div class="footer-links">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Use</a>
-                <a href="#">Contact Us</a>
-            </div>
-            <div class="socials">
-                <i class="fab fa-facebook"></i>
-                <i class="fab fa-twitter"></i>
-                <i class="fab fa-instagram"></i>
-                <i class="fab fa-youtube"></i>
-            </div>
-        </div>
-    </footer>
+    </div>
 
     <script>
-        function searchMovie() {
-            let query = document.getElementById('searchInput').value;
-            if(query) {
-                console.log("Searching for: " + query);
-                // Implementation for search logic
+        const movieList = document.getElementById('movieList');
+        const videoOverlay = document.getElementById('videoOverlay');
+        const mainPlayer = document.getElementById('mainPlayer');
+
+        function addMovie() {
+            const title = document.getElementById('mTitle').value;
+            const posterInput = document.getElementById('mPoster');
+            const videoInput = document.getElementById('mVideo');
+
+            if (!title || !posterInput.files[0] || !videoInput.files[0]) {
+                alert("Please fill all fields and select files!");
+                return;
             }
+
+            // Create temporary URLs for the files
+            const posterUrl = URL.createObjectURL(posterInput.files[0]);
+            const videoUrl = URL.createObjectURL(videoInput.files[0]);
+
+            // Create Movie Card HTML
+            const movieCard = document.createElement('div');
+            movieCard.className = 'movie-card';
+            movieCard.innerHTML = `
+                <img src="${posterUrl}" alt="Poster">
+                <div class="movie-info">
+                    <h3>${title}</h3>
+                    <button class="upload-btn" onclick="playMovie('${videoUrl}')" style="padding: 5px; font-size: 12px;">WATCH NOW</button>
+                </div>
+            `;
+
+            movieList.prepend(movieCard);
+
+            // Clear inputs
+            document.getElementById('mTitle').value = '';
+            alert("Movie Uploaded Successfully!");
+        }
+
+        function playMovie(url) {
+            mainPlayer.src = url;
+            videoOverlay.style.display = 'flex';
+            mainPlayer.play();
+        }
+
+        function closePlayer() {
+            videoOverlay.style.display = 'none';
+            mainPlayer.pause();
+            mainPlayer.src = '';
         }
     </script>
 
