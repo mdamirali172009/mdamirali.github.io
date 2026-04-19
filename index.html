@@ -3,70 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MovieHub - Upload & Watch</title>
+    <title>3D MovieHub Premium</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #0b0f13; color: white; padding-bottom: 50px; }
-        
-        /* Navbar */
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: #141a21; position: sticky; top: 0; z-index: 100; border-bottom: 2px solid #e50914; }
-        .logo { font-size: 24px; font-weight: bold; }
-        .logo span { color: #e50914; }
-
-        /* Upload Box */
-        .upload-container { max-width: 800px; margin: 30px auto; background: #1c252e; padding: 30px; border-radius: 10px; text-align: center; border: 1px solid #333; }
-        .upload-container h2 { margin-bottom: 20px; color: #e50914; }
-        .input-group { margin-bottom: 15px; text-align: left; }
-        .input-group label { display: block; margin-bottom: 5px; color: #ccc; }
-        .input-group input { width: 100%; padding: 10px; border-radius: 5px; border: none; background: #0b0f13; color: white; }
-        .upload-btn { width: 100%; padding: 12px; background: #e50914; border: none; color: white; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .upload-btn:hover { background: #b2070f; }
-
-        /* Movie Grid */
-        .container { padding: 0 5%; }
-        .section-title { margin: 40px 0 20px; font-size: 28px; border-left: 5px solid #e50914; padding-left: 15px; }
-        .movie-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-        
-        .movie-card { background: #1c252e; border-radius: 8px; overflow: hidden; transition: 0.3s; position: relative; }
-        .movie-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(229, 9, 20, 0.3); }
-        .movie-card img { width: 100%; height: 280px; object-fit: cover; }
-        .movie-info { padding: 12px; text-align: center; }
-        .movie-info h3 { font-size: 16px; margin-bottom: 5px; }
-
-        /* Video Player Modal (Simple) */
-        .video-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; }
-        .video-container { width: 80%; max-width: 800px; background: #000; position: relative; }
-        .close-btn { position: absolute; top: -40px; right: 0; color: white; cursor: pointer; font-size: 30px; }
-        video { width: 100%; }
-    </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="logo">MOVIE<span>HUB</span></div>
-        <div style="color: #ccc; font-size: 14px;">World's Largest Collection</div>
+        <div class="logo">3D<span>MOVIE</span></div>
+        <div class="search-box">
+            <input type="text" placeholder="Search movies...">
+            <button><i class="fas fa-search"></i></button>
+        </div>
     </nav>
 
-    <div class="upload-container">
-        <h2><i class="fas fa-upload"></i> Upload Movie</h2>
-        <div class="input-group">
-            <label>Movie Title</label>
-            <input type="text" id="mTitle" placeholder="Enter movie name...">
+    <section class="upload-section">
+        <div class="glass-upload-box">
+            <h2><i class="fas fa-upload"></i> Premium Upload</h2>
+            <div class="input-group">
+                <input type="text" id="mTitle" placeholder="Movie Name">
+            </div>
+            <div class="file-grid">
+                <input type="file" id="mPoster" accept="image/*">
+                <input type="file" id="mVideo" accept="video/*">
+            </div>
+            <button class="btn-3d" onclick="addMovie()">PUBLISH NOW</button>
         </div>
-        <div class="input-group">
-            <label>Poster Image (Select any image)</label>
-            <input type="file" id="mPoster" accept="image/*">
-        </div>
-        <div class="input-group">
-            <label>Video File (Select movie file)</label>
-            <input type="file" id="mVideo" accept="video/*">
-        </div>
-        <button class="upload-btn" onclick="addMovie()">PUBLISH MOVIE</button>
-    </div>
+    </section>
 
     <div class="container">
-        <h2 class="section-title">Latest Uploads</h2>
+        <h2 class="title">Latest 3D Collection</h2>
         <div class="movie-grid" id="movieList">
             </div>
     </div>
@@ -80,53 +46,39 @@
 
     <script>
         const movieList = document.getElementById('movieList');
-        const videoOverlay = document.getElementById('videoOverlay');
-        const mainPlayer = document.getElementById('mainPlayer');
-
         function addMovie() {
             const title = document.getElementById('mTitle').value;
-            const posterInput = document.getElementById('mPoster');
-            const videoInput = document.getElementById('mVideo');
+            const poster = document.getElementById('mPoster').files[0];
+            const video = document.getElementById('mVideo').files[0];
 
-            if (!title || !posterInput.files[0] || !videoInput.files[0]) {
-                alert("Please fill all fields and select files!");
-                return;
-            }
+            if(!title || !poster || !video) { alert("সবগুলো ফাইল দিন!"); return; }
 
-            // Create temporary URLs for the files
-            const posterUrl = URL.createObjectURL(posterInput.files[0]);
-            const videoUrl = URL.createObjectURL(videoInput.files[0]);
+            const posterUrl = URL.createObjectURL(poster);
+            const videoUrl = URL.createObjectURL(video);
 
-            // Create Movie Card HTML
-            const movieCard = document.createElement('div');
-            movieCard.className = 'movie-card';
-            movieCard.innerHTML = `
-                <img src="${posterUrl}" alt="Poster">
-                <div class="movie-info">
-                    <h3>${title}</h3>
-                    <button class="upload-btn" onclick="playMovie('${videoUrl}')" style="padding: 5px; font-size: 12px;">WATCH NOW</button>
+            const card = document.createElement('div');
+            card.className = 'movie-card-3d';
+            card.innerHTML = `
+                <div class="inner-card">
+                    <img src="${posterUrl}">
+                    <div class="info">
+                        <h3>${title}</h3>
+                        <button onclick="playMovie('${videoUrl}')">Watch</button>
+                    </div>
                 </div>
             `;
-
-            movieList.prepend(movieCard);
-
-            // Clear inputs
-            document.getElementById('mTitle').value = '';
-            alert("Movie Uploaded Successfully!");
+            movieList.prepend(card);
+            alert("সফলভাবে ৩ডি লিস্টে যুক্ত হয়েছে!");
         }
 
         function playMovie(url) {
-            mainPlayer.src = url;
-            videoOverlay.style.display = 'flex';
-            mainPlayer.play();
+            document.getElementById('mainPlayer').src = url;
+            document.getElementById('videoOverlay').style.display = 'flex';
         }
-
         function closePlayer() {
-            videoOverlay.style.display = 'none';
-            mainPlayer.pause();
-            mainPlayer.src = '';
+            document.getElementById('videoOverlay').style.display = 'none';
+            document.getElementById('mainPlayer').pause();
         }
     </script>
-
 </body>
 </html>
