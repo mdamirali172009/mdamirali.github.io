@@ -3,82 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D MovieHub Premium</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Responsive Navbar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-100">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="#" class="text-2xl font-bold text-gray-900">
+                        Logo
+                    </a>
+                </div>
 
-    <nav class="navbar">
-        <div class="logo">3D<span>MOVIE</span></div>
-        <div class="search-box">
-            <input type="text" placeholder="Search movies...">
-            <button><i class="fas fa-search"></i></button>
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#" class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+                        Home
+                    </a>
+                    <a href="#" class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+                        About
+                    </a>
+                    <a href="#" class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+                        Services
+                    </a>
+                    <a href="#" class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+                        Portfolio
+                    </a>
+                    <a href="#" class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+                        Contact
+                    </a>
+                </div>
+
+                <!-- CTA Button (Desktop) -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="#" class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+                        Login
+                    </a>
+                    <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+                        Get Started
+                    </a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="text-gray-700 hover:text-gray-900 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+                        <span class="sr-only">Open main menu</span>
+                        <!-- Hamburger Icon -->
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" id="hamburger-icon">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu (Hidden by default) -->
+        <div id="mobile-menu" class="md:hidden hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">Home</a>
+            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">About</a>
+            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">Services</a>
+            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">Portfolio</a>
+            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">Contact</a>
+            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">Login</a>
+            <a href="#" class="block w-full text-center px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200 rounded-md mx-2 mb-2">
+                Get Started
+            </a>
         </div>
     </nav>
 
-    <section class="upload-section">
-        <div class="glass-upload-box">
-            <h2><i class="fas fa-upload"></i> Premium Upload</h2>
-            <div class="input-group">
-                <input type="text" id="mTitle" placeholder="Movie Name">
+    <!-- Sample content to demonstrate responsiveness -->
+    <main class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-8">Responsive Navbar Demo</h1>
+        <p class="text-lg text-gray-700 mb-8">
+            This navigation bar is fully responsive. Resize your browser window or view on mobile to see it in action.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Sample cards -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold mb-2">Feature 1</h3>
+                <p class="text-gray-600">Fully responsive design that works on all devices.</p>
             </div>
-            <div class="file-grid">
-                <input type="file" id="mPoster" accept="image/*">
-                <input type="file" id="mVideo" accept="video/*">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold mb-2">Feature 2</h3>
+                <p class="text-gray-600">Smooth hover effects and transitions.</p>
             </div>
-            <button class="btn-3d" onclick="addMovie()">PUBLISH NOW</button>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold mb-2">Feature 3</h3>
+                <p class="text-gray-600">Accessible and keyboard navigable.</p>
+            </div>
         </div>
-    </section>
+    </main>
 
-    <div class="container">
-        <h2 class="title">Latest 3D Collection</h2>
-        <div class="movie-grid" id="movieList">
-            </div>
-    </div>
-
-    <div class="video-overlay" id="videoOverlay">
-        <div class="video-container">
-            <span class="close-btn" onclick="closePlayer()">&times;</span>
-            <video id="mainPlayer" controls></video>
-        </div>
-    </div>
-
+    <!-- JavaScript for mobile menu toggle -->
     <script>
-        const movieList = document.getElementById('movieList');
-        function addMovie() {
-            const title = document.getElementById('mTitle').value;
-            const poster = document.getElementById('mPoster').files[0];
-            const video = document.getElementById('mVideo').files[0];
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const hamburgerIcon = document.getElementById('hamburger-icon');
 
-            if(!title || !poster || !video) { alert("সবগুলো ফাইল দিন!"); return; }
+        mobileMenuButton.addEventListener('click', function() {
+            mobileMenu.classList.toggle('hidden');
+        });
 
-            const posterUrl = URL.createObjectURL(poster);
-            const videoUrl = URL.createObjectURL(video);
-
-            const card = document.createElement('div');
-            card.className = 'movie-card-3d';
-            card.innerHTML = `
-                <div class="inner-card">
-                    <img src="${posterUrl}">
-                    <div class="info">
-                        <h3>${title}</h3>
-                        <button onclick="playMovie('${videoUrl}')">Watch</button>
-                    </div>
-                </div>
-            `;
-            movieList.prepend(card);
-            alert("সফলভাবে ৩ডি লিস্টে যুক্ত হয়েছে!");
-        }
-
-        function playMovie(url) {
-            document.getElementById('mainPlayer').src = url;
-            document.getElementById('videoOverlay').style.display = 'flex';
-        }
-        function closePlayer() {
-            document.getElementById('videoOverlay').style.display = 'none';
-            document.getElementById('mainPlayer').pause();
-        }
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const isClickInsideMenu = mobileMenu.contains(event.target);
+            const isClickOnButton = mobileMenuButton.contains(event.target);
+            
+            if (!isClickInsideMenu && !isClickOnButton) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
     </script>
 </body>
 </html>
