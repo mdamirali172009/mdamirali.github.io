@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieHub - Your Netflix Alternative</title>
+    <link href="https://fonts.googleapis.com/css2?family=Netflix+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { 
+            font-family: 'Netflix Sans', -apple-system, sans-serif; 
+            background: #141414; 
+            color: white; 
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            position: fixed; top:0; width:100%; 
+            background: rgba(0,0,0,0.8); 
+            backdrop-filter: blur(10px);
+            z-index: 1000; padding: 10px 4%;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo { font-size: 28px; font-weight: 700; color: #e50914; }
+        .upload-btn {
+            background: #e50914; color:white; 
+            border:none; padding:12px 24px; 
+            border-radius: 4px; cursor:pointer;
+            font-weight: 600; font-size: 16px;
+        }
+        .upload-btn:hover { background: #f40612; }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh; 
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+            url('https://images.unsplash.com/photo-1489599091523-8c8a443d8c6a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover; background-position: center;
+            display: flex; flex-direction: column; justify-content: center;
+            padding: 0 4%; text-align: center;
+        }
+        .hero h1 { font-size: 4rem; margin-bottom: 20px; }
+        .hero p { font-size: 1.5rem; margin-bottom: 30px; max-width: 600px; }
+        .play-btn {
+            background: #e50914; color:white; border:none;
+            padding: 18px 40px; font-size: 20px; border-radius: 4px;
+            cursor:pointer; margin-right: 15px; font-weight: 600;
+        }
+        .upload-hero { background: transparent; border: 2px solid #e50914; color: #e50914; }
+
+        /* Upload Modal */
+        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; 
+                 background: rgba(0,0,0,0.9); z-index: 2000; }
+        .modal-content {
+            position: absolute; top:50%; left:50%; transform: translate(-50%,-50%);
+            background: #222; padding: 40px; border-radius: 12px; width: 90%; max-width: 500px;
+        }
+        .close { position: absolute; right:20px; top:20px; font-size: 30px; cursor:pointer; }
+        .file-input { width:100%; padding:15px; background:#333; border:1px solid #555; 
+                     color:white; border-radius:6px; margin:15px 0; }
+        .progress { width:100%; height:6px; background:#333; border-radius:3px; overflow:hidden; margin:20px 0; }
+        .progress-bar { height:100%; background: linear-gradient(90deg, #e50914, #ff6b6b); width:0%; transition: width 0.3s; }
+
+        /* Movie Grid */
+        .movies-grid {
+            padding: 80px 4% 40px; max-width: 1400px; margin: 0 auto;
+        }
+        .section-title { font-size: 2rem; margin-bottom: 20px; color: #fff; }
+        .movies-row {
+            display: flex; gap: 12px; overflow-x: auto; padding: 20px 0;
+            scrollbar-width: thin; scrollbar-color: #666 #333;
+        }
+        .movies-row::-webkit-scrollbar { height: 8px; }
+        .movies-row::-webkit-scrollbar-track { background: #333; }
+        .movies-row::-webkit-scrollbar-thumb { background: #666; border-radius: 4px; }
+        
+        .movie-card {
+            min-width: 250px; height: 350px; background-size: cover; 
+            border-radius: 8px; cursor: pointer; position: relative;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .movie-card:hover { transform: scale(1.05); box-shadow: 0 20px 40px rgba(229,9,20,0.4); }
+        .movie-overlay {
+            position: absolute; bottom:0; left:0; right:0; 
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            padding: 20px; color:white;
+        }
+        .movie-title { font-size: 18px; font-weight: 600; margin-bottom: 5px; }
+        .movie-year { color: #ccc; font-size: 14px; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .movies-row { gap: 8px; }
+            .movie-card { min-width: 200px; height: 280px; }
+        }
+
+        /* Player */
+        .video-player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                       background: #000; z-index: 3000; }
+        .video-player video { width: 100%; height: 100%; object-fit: contain; }
+        .player-controls {
+            position: absolute; bottom: 0; left: 0; right: 0; 
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            padding: 20px; display: flex; align-items: center;
+        }
+        .close-player { position: absolute; top: 20px; right: 20px; font-size: 30px; cursor: pointer; color: white; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">🎬 MovieHub</div>
+        <button class="upload-btn" onclick="openUploadModal()">+ Upload Movie</button>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero">
+        <h1>Watch Movies Anywhere</h1>
+        <p>Upload your favorite movies and stream instantly. No subscriptions, no limits.</p>
+        <button class="play-btn" onclick="scrollToMovies()">Start Watching</button>
+        <button class="play-btn upload-hero" onclick="openUploadModal()">Upload First Movie</button>
+    </div>
+
+    <!-- Movies Grid -->
+    <div class="movies-grid">
+        <h2 class="section-title">Latest Uploads</h2>
+        <div class="movies-row" id="moviesRow">
+            <!-- Movies will be loaded here -->
+        </div>
+        
+        <h2 class="section-title" style="margin-top: 60px;">Trending</h2>
+        <div class="movies-row" id="trendingRow">
+            <!-- Trending movies -->
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeUploadModal()">&times;</span>
+            <h2>📤 Upload Movie</h2>
+            <p>Max 500MB MP4 files</p>
+            <input type="file" id="movieFile" class="file-input" accept="video/*">
+            <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+            <button class="upload-btn" style="width:100%" onclick="uploadMovie()">🚀 Upload & Process</button>
+            <p style="font-size:12px; color:#ccc; margin-top:15px;">
+                Video will be processed and available instantly!
+            </p>
+        </div>
+    </div>
+
+    <!-- Video Player -->
+    <div id="videoPlayer" class="video-player">
+        <span class="close-player" onclick="closePlayer()">&times;</span>
+        <video id="movieVideo" controls autoplay>
+            Your browser doesn't support video.
+        </video>
+    </div>
+
+    <script>
+        // Sample movies data (Backend এ video URLs আসবে)
+        const movies = [
+            {id:1, title:'Avengers Endgame', year:2019, poster:'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400'},
+            {id:2, title:'Inception', year:2010, poster:'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400'},
+            {id:3, title:'The Matrix', year:1999, poster:'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400'},
+            {id:4, title:'Interstellar', year:2014, poster:'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400'},
+            {id:5, title:'John Wick 4', year:2023, poster:'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400'},
+            {id:6, title:'Oppenheimer', year:2023, poster:'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400'}
+        ];
+
+        // Load movies
+        function loadMovies() {
+            const row1 = document.getElementById('moviesRow');
+            const row2 = document.getElementById('trendingRow');
+            
+            movies.slice(0,6).forEach(movie => {
+                const card = createMovieCard(movie);
+                row1.appendChild(card);
+            });
+            
+            movies.slice(3,6).forEach(movie => {
+                const card = createMovieCard(movie);
+                row2.appendChild(card);
+            });
+        }
+
+        function createMovieCard(movie) {
+            const card = document.createElement('div');
+            card.className = 'movie-card';
+            card.style.backgroundImage = `url(${movie.poster})`;
+            card.onclick = () => playMovie(movie);
+            
+            card.innerHTML = `
+                <div class="movie-overlay">
+                    <div class="movie-title">${movie.title}</div>
+                    <div class="movie-year">${movie.year}</div>
+                </div>
+            `;
+            return card;
+        }
+
+        function playMovie(movie) {
+            const player = document.getElementById('videoPlayer');
+            const video = document.getElementById('movieVideo');
+            // Backend থেকে real video URL আসবে
+            video.src = `https://your-server.com/videos/${movie.id}.mp4`;
+            player.style.display = 'block';
+        }
+
+        function closePlayer() {
+            document.getElementById('videoPlayer').style.display = 'none';
+            document.getElementById('movieVideo').pause();
+        }
+
+        // Modal functions
+        function openUploadModal() {
+            document.getElementById('uploadModal').style.display = 'block';
+        }
+        function closeUploadModal() {
+            document.getElementById('uploadModal').style.display = 'none';
+        }
+
+        // Upload simulation (Backend এ real upload)
+        function uploadMovie() {
+            const fileInput = document.getElementById('movieFile');
+            const progress = document.getElementById('progressBar');
+            
+            if(!fileInput.files[0]) {
+                alert('Please select a movie file!');
+                return;
+            }
+            
+            // Simulate upload
+            let progressVal = 0;
+            const interval = setInterval(() => {
+                progress.style.width = progressVal + '%';
+                progressVal += 10;
+                if(progressVal > 100) {
+                    clearInterval(interval);
+                    alert('🎉 Movie uploaded successfully!\nRefresh to see it in Latest Uploads');
+                    closeUploadModal();
+                }
+            }, 200);
+        }
+
+        function scrollToMovies() {
+            document.querySelector('.movies-grid').scrollIntoView({behavior: 'smooth'});
+        }
+
+        // Initialize
+        window.onload = () => {
+            loadMovies();
+        };
+
+        // Close modal on outside click
+        window.onclick = (e) => {
+            const modal = document.getElementById('uploadModal');
+            if(e.target == modal) closeUploadModal();
+        }
+    </script>
+</body>
+</html>
