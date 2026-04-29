@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixelForge Agency - AI Design Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --accent-neon: #00f5ff;
+            --accent-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --shadow-light: 0 8px 32px rgba(31, 38, 135, 0.37);
+            --shadow-glow: 0 0 20px rgba(0, 245, 255, 0.3);
+        }
+
+        *::selection {
+            background: var(--accent-neon);
+            color: #000;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Glassmorphism Base */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: var(--shadow-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--accent-gradient);
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            padding: 1rem 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            border-radius: 16px;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-neon);
+            background: var(--glass-bg);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            padding: 0 5%;
+            position: relative;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(3.5rem, 8vw, 7rem);
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            font-weight: 300;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1.25rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 16px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn-secondary {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+        }
+
+        .btn:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 25px 50px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Sections */
+        .section {
+            padding: 8rem 5% 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            text-align: center;
+            margin-bottom: 4rem;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--accent-gradient);
+            border-radius: 2px;
+        }
+
+        /* Services */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            padding: 3rem 2.5rem;
+            text-align: center;
+            transition: all 0.4s ease;
+        }
+
+        .service-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 2rem;
+            background: var(--accent-gradient);
+            border-radius: 24px;
+            display: grid;
+            place-items: center;
+            font-size: 2.5rem;
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        /* Portfolio */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .portfolio-item {
+            position: relative;
+            height: 300px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            transition: all 0.4s ease;
+        }
+
+        .portfolio-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--accent-gradient);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .portfolio-item:hover::before {
+            opacity: 0.1;
+        }
+
+        .portfolio-item:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 50px 100px rgba(0,0,0,0.5);
+        }
+
+        .portfolio-overlay {
+            position: absolute;
+            bottom: 2rem;
+            left: 2rem;
+            right: 2rem;
+            background: rgba(255,255,255,0.95);
+            color: #000;
+            padding: 1.5rem 2rem;
+            border-radius: 16px;
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+        }
+
+        .portfolio-item:hover .portfolio-overlay {
+            transform: translateY(0);
+        }
+
+        /* Skills */
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .skill-item h4 {
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .skill-bar {
+            height: 12px;
+            background: var(--glass-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .skill-progress {
+            height: 100%;
+            background: var(--accent-gradient);
+            border-radius: 10px;
+            transition: width 2s ease;
+            width: 0;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 4rem 5% 2rem;
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-links a {
+            width: 60px;
+            height: 60px;
+            background: var(--glass-bg);
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--accent-gradient);
+            color: white;
+            transform: translateY(-5px) scale(1.1);
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar { padding: 1rem; }
+            .nav-links { gap: 1rem; }
+            .cta-buttons { flex-direction: column; align-items: center; }
+            .btn { width: 100%; max-width: 300px; }
+            .services-grid, .portfolio-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Scroll Behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-gradient);
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar glass">
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#portfolio">Portfolio</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1 class="float">PixelForge</h1>
+            <p class="hero-subtitle">
+                We craft stunning digital experiences with AI-powered design and development.
+                From logos to full-stack websites, we deliver perfection.
+            </p>
+            <div class="cta-buttons">
+                <a href="#portfolio" class="btn btn-primary">
+                    <i class="fas fa-eye"></i>
+                    View Portfolio
+                </a>
+                <a href="#contact" class="btn btn-secondary">
+                    <i class="fas fa-message"></i>
+                    Get Quote
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services -->
+    <section id="services" class="section">
+        <h2 class="section-title">Our Services</h2>
+        <div class="services-grid">
+            <div class="service-card glass">
+                <div class="service-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3>AI Generation</h3>
+                <p>Neural networks create stunning visuals, logos, and artwork from text prompts. Midjourney, Stable Diffusion experts.</p>
+            </div>
+            <div class="service-card glass">
+                <div class="service-icon">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <h3>Logo Design</h3>
+                <p>Minimalist, modern logos that scale perfectly. Brand identity packages with full vector source files.</p>
+            </div>
+            <div class="service-card glass">
+                <div class="service-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h3>Web Development</h3>
+                <p>React, Next.js, TailwindCSS. Lightning-fast, SEO-optimized websites with glassmorphism design.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio -->
+    <section id="portfolio" class="section">
+        <h2 class="section-title">Portfolio</h2>
+        <div class="portfolio-grid">
+            <div class="portfolio-item" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                <div class="portfolio-overlay">
+                    <h3>AI Art Gallery</h3>
+                    <p>Midjourney generated masterpiece collection</p>
+                </div>
+            </div>
+            <div class="portfolio-item" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                <div class="portfolio-overlay">
+                    <h3>Tech Startup Logo</h3>
+                    <p>Minimalist SaaS branding package</p>
+                </div>
+            </div>
+            <div class="portfolio-item" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+                <div class="portfolio-overlay">
+                    <h3>E-commerce Website</h3>
+                    <p>Next.js + TailwindCSS glassmorphism design</p>
+                </div>
+            </div>
+            <div class="portfolio-item" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
+                <div class="portfolio-overlay">
+                    <h3>Fintech Dashboard</h3>
+                    <p>React dashboard with real-time data</p>
+                </div>
+            </div>
+            <div class="portfolio-item" style="background: linear-gradient(135deg, #fa709a, #fee140);">
+                <div class="portfolio-overlay">
+                    <h3>Fashion Brand</h3>
+                    <p>Complete branding + e-commerce site</p>
+                </div>
+            </div>
+            <div class="portfolio-item" style="background: linear-gradient(135deg, #a8edea, #fed6e3);">
+                <div class="portfolio-overlay">
+                    <h3>Restaurant Website</h3>
+                    <p>Food delivery platform with animations</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills -->
+    <section id="skills" class="section">
+        <h2 class="section-title">Expertise</h2>
+        <div class="skills-container">
+            <div class="skill-item glass" style="padding: 3rem;">
+                <h4>React / Next.js</h4>
+                <div class="skill-bar"><div class="skill-progress" data-width="98%"></div></div>
+            </div>
+            <div class="skill-item glass" style="padding: 3rem;">
+                <h4>TailwindCSS</h4>
+                <div class="skill-bar"><div class="skill-progress" data-width="95%"></div></div>
+            </div>
+            <div class="skill-item glass" style="padding: 3rem;">
+                <h4>AI/ML (Midjourney)</h4>
+                <div class="skill-bar"><div class="skill-progress" data-width="92%"></div></div>
+            </div>
+            <div class="skill-item glass" style="padding: 3rem;">
+                <h4>Figma / Adobe</h4>
+                <div class="skill-bar"><div class="skill-progress" data-width="97%"></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="social-links">
+            <a href="#"><i class="fab fa-dribbble"></i></a>
+            <a href="#"><i class="fab fa-behance"></i></a>
+            <a href="#"><i class="fab fa-github"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fas fa-envelope"></i></a>
+        </div>
+        <p>&copy; 2024 PixelForge Agency. Crafted with ❤️ and AI.</p>
+        <p style="margin-top: 0.5rem; opacity: 0.7;">hello@pixelforge.studio | +880-XXX-XXXXXX</p>
+    </footer>
+
+    <script>
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        // Animate skill bars on scroll
+        const observerOptions = {
+            threshold: 0.5,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const progressBars = entry.target.querySelectorAll('.skill-progress');
+                    progressBars.forEach(bar => {
+                        const width = bar.getAttribute('data-width');
+                        bar.style.width = width;
+                    });
+                }
+            });
+        }, observerOptions);
+
+        // Observe skills section
+        const skillsSection = document.querySelector('#skills');
+        observer.observe(skillsSection);
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(15, 15, 15, 0.95)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.1)';
+            }
+        });
+
+        // Portfolio hover scale effect
+        document.querySelectorAll('.portfolio-item').forEach(item => {
+            item.addEventListener('mousemove', (e) => {
+                const rect = item.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                item.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.2), transparent 70%)`;
+            });
+            
+            item.addEventListener('mouseleave', () => {
+                item.style.background = '';
+            });
+        });
+    </script>
+</body>
+</html>
