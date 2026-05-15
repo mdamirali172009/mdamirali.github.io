@@ -1,54 +1,62 @@
-// ====================== INPUT SYSTEM ======================
-const Input = {
-    mouse: {
-        left: false,
-        middle: false,
-        right: false,
-        x: 0,
-        y: 0
-    }
-};
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Game</title>
+    <style>
+        body { margin: 0; background: #000; overflow: hidden; }
+        canvas { display: block; }
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-family: Arial, sans-serif;
+            background: rgba(0,0,0,0.5);
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
 
-// Mouse Button Handler
-const handleMouseButton = (event, isPressed) => {
-    switch (event.button) {
-        case 0: // Left Button
-            Input.mouse.left = isPressed;
-            break;
-        case 1: // Middle Button
-            Input.mouse.middle = isPressed;
-            break;
-        case 2: // Right Button
-            Input.mouse.right = isPressed;
-            break;
-    }
-};
+    <canvas id="gameCanvas"></canvas>
 
-// ==================== EVENT LISTENERS ====================
+    <div id="info">
+        <h2>🎮 মাউস ইনপুট টেস্ট</h2>
+        <p>Left Click: <span id="left">False</span></p>
+        <p>Right Click: <span id="right">False</span></p>
+        <p>Mouse Position: (<span id="x">0</span>, <span id="y">0</span>)</p>
+    </div>
 
-// Mouse Button Press
-document.addEventListener("mousedown", (event) => {
-    handleMouseButton(event, true);
-});
+    <script src="input.js"></script>
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-// Mouse Button Release
-document.addEventListener("mouseup", (event) => {
-    handleMouseButton(event, false);
-});
+        // Canvas-এ ক্লিক দেখানোর জন্য সাধারণ ড্রয়িং
+        const ctx = canvas.getContext("2d");
+        
+        function draw() {
+            ctx.fillStyle = "#111";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = "#0f0";
+            ctx.font = "30px Arial";
+            ctx.fillText("3D/2D গেম এখানে আসবে", canvas.width/2 - 200, canvas.height/2);
+            
+            // Status Update
+            document.getElementById("left").textContent = Input.mouse.left;
+            document.getElementById("right").textContent = Input.mouse.right;
+            document.getElementById("x").textContent = Input.mouse.x;
+            document.getElementById("y").textContent = Input.mouse.y;
+            
+            requestAnimationFrame(draw);
+        }
 
-// Mouse Movement
-document.addEventListener("mousemove", (event) => {
-    Input.mouse.x = event.clientX;
-    Input.mouse.y = event.clientY;
-});
-
-// Right Click Menu Disable (গেমের জন্য খুব কাজের)
-document.addEventListener("contextmenu", (event) => {
-    event.preventDefault();
-});
-
-// Optional: Mouse Wheel
-document.addEventListener("wheel", (event) => {
-    // চাইলে এখানে wheel handling যোগ করতে পারবে
-    // console.log("Wheel scrolled:", event.deltaY);
-}, { passive: true });
+        draw();
+    </script>
+</body>
+</html>
