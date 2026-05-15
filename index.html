@@ -3,59 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Game</title>
+    <title>Mouse Input Test - 3D Ready</title>
     <style>
-        body { margin: 0; background: #000; overflow: hidden; }
-        canvas { display: block; }
-        #info {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: white;
+        body { 
+            margin: 0; 
+            background: #0a0a0a; 
+            overflow: hidden; 
             font-family: Arial, sans-serif;
-            background: rgba(0,0,0,0.5);
-            padding: 10px;
-            border-radius: 5px;
         }
+        canvas { 
+            display: block; 
+        }
+        #ui {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            color: #0ff;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #0ff;
+        }
+        h1 { margin: 0 0 10px 0; color: #0f0; }
     </style>
 </head>
 <body>
 
     <canvas id="gameCanvas"></canvas>
 
-    <div id="info">
-        <h2>🎮 মাউস ইনপুট টেস্ট</h2>
-        <p>Left Click: <span id="left">False</span></p>
-        <p>Right Click: <span id="right">False</span></p>
-        <p>Mouse Position: (<span id="x">0</span>, <span id="y">0</span>)</p>
+    <div id="ui">
+        <h1>🎮 Mouse Input Active</h1>
+        <p>Left Click: <strong id="left">false</strong></p>
+        <p>Right Click: <strong id="right">false</strong></p>
+        <p>Middle Click: <strong id="middle">false</strong></p>
+        <p>Position: (<strong id="x">0</strong>, <strong id="y">0</strong>)</p>
     </div>
 
-    <script src="input.js"></script>
+    <!-- Input Script -->
+    <script>
+        // ====================== INPUT SYSTEM ======================
+        const Input = {
+            mouse: {
+                left: false,
+                middle: false,
+                right: false,
+                x: 0,
+                y: 0
+            }
+        };
+
+        const handleMouseButton = (event, isPressed) => {
+            switch (event.button) {
+                case 0: Input.mouse.left = isPressed; break;
+                case 1: Input.mouse.middle = isPressed; break;
+                case 2: Input.mouse.right = isPressed; break;
+            }
+        };
+
+        document.addEventListener("mousedown", (e) => handleMouseButton(e, true));
+        document.addEventListener("mouseup",   (e) => handleMouseButton(e, false));
+
+        document.addEventListener("mousemove", (e) => {
+            Input.mouse.x = e.clientX;
+            Input.mouse.y = e.clientY;
+        });
+
+        document.addEventListener("contextmenu", e => e.preventDefault());
+    </script>
+
     <script>
         const canvas = document.getElementById("gameCanvas");
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        // Canvas-এ ক্লিক দেখানোর জন্য সাধারণ ড্রয়িং
         const ctx = canvas.getContext("2d");
-        
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
         function draw() {
-            ctx.fillStyle = "#111";
+            ctx.fillStyle = "#111122";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            ctx.fillStyle = "#0f0";
-            ctx.font = "30px Arial";
-            ctx.fillText("3D/2D গেম এখানে আসবে", canvas.width/2 - 200, canvas.height/2);
-            
-            // Status Update
+
+            // Simple 3D-like effect
+            ctx.fillStyle = "#00ffff";
+            ctx.font = "bold 40px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText("3D GAME READY", canvas.width/2, canvas.height/2 - 50);
+
+            ctx.font = "20px Arial";
+            ctx.fillStyle = "#ffffff";
+            ctx.fillText("মাউস দিয়ে ক্লিক করো এবং ঘোরাও", canvas.width/2, canvas.height/2 + 20);
+
+            // Update UI
             document.getElementById("left").textContent = Input.mouse.left;
             document.getElementById("right").textContent = Input.mouse.right;
+            document.getElementById("middle").textContent = Input.mouse.middle;
             document.getElementById("x").textContent = Input.mouse.x;
             document.getElementById("y").textContent = Input.mouse.y;
-            
+
             requestAnimationFrame(draw);
         }
 
+        window.addEventListener("resize", resize);
+        resize();
         draw();
     </script>
 </body>
